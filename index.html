@@ -337,6 +337,49 @@
       .art-box { min-height: 320px; }
       .art { max-width: 240px; }
     }
+
+    /* 두 번째 화면에서 세부 주제를 펼치는 구조 */
+    .topic-area[hidden] { display: none !important; }
+    .topic-area {
+      margin: 26px auto 0;
+      padding-top: 24px;
+      border-top: 1px solid #dbe8f5;
+      animation: reveal .42s cubic-bezier(.2,.75,.2,1) both;
+    }
+    .topic-area .section-title, .topic-area .section-desc { text-align: center; }
+    .topic-area .section-desc { margin-bottom: 18px; }
+    .topic-area .category-grid {
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      margin-bottom: 20px;
+    }
+    .subject-card.grid-btn.chosen {
+      border-color: #587be9;
+      box-shadow: 0 0 0 3px rgba(88,123,233,.16), 0 14px 26px rgba(46,91,160,.17);
+    }
+    .topic-area #categoryGrid .grid-btn {
+      animation: reveal .42s both;
+      animation-delay: calc(var(--order) * 45ms);
+    }
+    .art-panel { max-width: 660px; margin: 0 auto; }
+    .art-box { min-height: 375px; }
+    /* 그림 전체 및 개별 도형이 서로 다른 리듬으로 움직이도록 설정 */
+    .art { animation: artAppear .65s cubic-bezier(.2,.85,.25,1) both, artHover 3.8s ease-in-out .65s infinite; }
+    .art svg > :not(rect):not(ellipse):not(svg) { transform-box: fill-box; transform-origin: center; }
+    .art svg > path:nth-child(3n+1), .art svg > circle:nth-child(3n+1) { animation: artWiggle 2.6s ease-in-out infinite alternate; }
+    .art svg > path:nth-child(3n+2), .art svg > circle:nth-child(3n+2) { animation: artPulse 3.4s ease-in-out infinite; }
+    .art svg > g { transform-box: fill-box; transform-origin: center; animation: artRotate 9s ease-in-out infinite; }
+    .art-box h3 { animation: reveal .38s both; }
+    @keyframes reveal { from { opacity: 0; transform: translateY(15px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes artAppear { from { opacity:0; transform:translateY(22px) scale(.82) rotate(-5deg); } to { opacity:1; transform:translateY(0) scale(1) rotate(0deg); } }
+    @keyframes artHover { 0%,100% { transform:translateY(0) rotate(-1.5deg); } 50% { transform:translateY(-14px) rotate(2deg); } }
+    @keyframes artWiggle { from { transform: rotate(-3deg) translateY(0); } to { transform: rotate(3deg) translateY(-3px); } }
+    @keyframes artPulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.045); } }
+    @keyframes artRotate { 0%,100% { transform:rotate(-4deg); } 50% { transform:rotate(7deg); } }
+    @media (max-width: 700px) { .topic-area .category-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+    @media (max-width: 420px) { .topic-area #categoryGrid .grid-btn { min-height: 85px; font-size:14px; } }
+    @media (prefers-reduced-motion: reduce) {
+      .topic-area, .topic-area #categoryGrid .grid-btn, .art, .art svg > *, .art-box h3 { animation: none !important; }
+    }
   </style>
 </head>
 <body>
@@ -352,39 +395,25 @@
 
       <section class="screen" id="subjectScreen">
         <h2>과목 선택</h2>
-        <p>공부할 과목을 선택해주세요.</p>
+        <p>기술 또는 가정을 눌러 주제를 살펴보세요.</p>
         <div class="subject-grid">
-          <button type="button" class="subject-card grid-btn" id="techButton">
-            기술
-          </button>
-          <button type="button" class="subject-card grid-btn" id="homeEcButton">
-            가정
-          </button>
+          <button type="button" class="subject-card grid-btn" id="techButton" aria-expanded="false" aria-controls="topicArea">기술</button>
+          <button type="button" class="subject-card grid-btn" id="homeEcButton" aria-expanded="false" aria-controls="topicArea">가정</button>
+        </div>
+
+        <!-- 과목을 선택하면 같은 두 번째 화면 안에 세부 주제가 펼쳐집니다. -->
+        <div id="topicArea" class="topic-area" hidden>
+          <h3 class="section-title" id="categoryTitle">주제 선택</h3>
+          <p class="section-desc" id="categoryDesc"></p>
+          <div class="category-grid" id="categoryGrid"></div>
+          <div class="art-panel" id="artPanel" aria-live="polite">
+            <div class="art-box" id="artBox">
+              <div class="placeholder">보고 싶은 주제를 선택해 주세요.</div>
+            </div>
+          </div>
         </div>
         <div class="nav-row">
           <button type="button" class="btn secondary" id="backToHome">처음으로</button>
-        </div>
-      </section>
-
-      <section class="screen" id="categoryScreen">
-        <div class="category-layout">
-          <div class="category-panel">
-            <h3 class="section-title" id="categoryTitle">가정 주제 선택</h3>
-            <p class="section-desc" id="categoryDesc">버튼을 누르면 오른쪽에 해당 주제 그림이 나타납니다.</p>
-            <div class="category-grid" id="categoryGrid"></div>
-            <div class="nav-row">
-              <button type="button" class="btn secondary" id="backToSubject">과목 선택으로</button>
-              <button type="button" class="btn secondary" id="backToHomeFromCategory">처음으로</button>
-            </div>
-          </div>
-
-          <div class="art-panel">
-            <div class="art-box" id="artBox">
-              <div class="placeholder">
-                보고 싶은 주제 버튼을 눌러보세요.<br />해당 주제에 맞는 그림이 여기에 나타납니다.
-              </div>
-            </div>
-          </div>
         </div>
       </section>
     </div>
@@ -393,8 +422,7 @@
   <script>
     const screens = {
       home: document.getElementById('homeScreen'),
-      subject: document.getElementById('subjectScreen'),
-      category: document.getElementById('categoryScreen')
+      subject: document.getElementById('subjectScreen')
     };
 
     function showScreen(name) {
@@ -703,14 +731,22 @@
 
     function renderCategoryScreen(mode) {
       const data = topics[mode];
+      const area = document.getElementById('topicArea');
+      area.hidden = false;
+      document.getElementById('techButton').classList.toggle('chosen', mode === 'tech');
+      document.getElementById('homeEcButton').classList.toggle('chosen', mode === 'home');
+      document.getElementById('techButton').setAttribute('aria-expanded', String(mode === 'tech'));
+      document.getElementById('homeEcButton').setAttribute('aria-expanded', String(mode === 'home'));
       categoryTitle.textContent = data.title;
       categoryDesc.textContent = data.desc;
-      categoryGrid.innerHTML = '';
+      categoryGrid.replaceChildren();
+      artBox.innerHTML = '<div class="placeholder">아래 주제 버튼을 눌러 그림을 살펴보세요.</div>';
 
       data.items.forEach((item, index) => {
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'grid-btn';
+        button.style.setProperty('--order', index);
         const icon = document.createElement('span');
         icon.className = 'topic-icon';
         icon.setAttribute('aria-hidden', 'true');
@@ -718,27 +754,17 @@
         const label = document.createElement('span');
         label.textContent = item.text;
         button.append(icon, label);
-
         button.addEventListener('click', () => {
-          document.querySelectorAll('#categoryGrid .grid-btn').forEach(btn => btn.classList.remove('active'));
+          categoryGrid.querySelectorAll('.grid-btn').forEach(btn => btn.classList.remove('active'));
           button.classList.add('active');
           renderArt(item);
         });
-
         categoryGrid.appendChild(button);
-
-        if (index === 0) {
-          setTimeout(() => button.click(), 0);
-        }
       });
-
-      showScreen('category');
     }
 
     document.getElementById('startButton').addEventListener('click', () => showScreen('subject'));
     document.getElementById('backToHome').addEventListener('click', () => showScreen('home'));
-    document.getElementById('backToSubject').addEventListener('click', () => showScreen('subject'));
-    document.getElementById('backToHomeFromCategory').addEventListener('click', () => showScreen('home'));
     document.getElementById('techButton').addEventListener('click', () => renderCategoryScreen('tech'));
     document.getElementById('homeEcButton').addEventListener('click', () => renderCategoryScreen('home'));
   </script>
