@@ -802,6 +802,25 @@
       .competency-cloud,.sky-cloud,.title-cloud,.action-cloud,.action-icon {animation:none!important;}
     }
 
+    /* 의생활 학습 프로그램 연결 버튼 및 화면 */
+    .clothes-launch {
+      margin-top: 18px;
+      width: min(100%, 290px);
+      border: 0;
+      border-radius: 18px;
+      padding: 17px 20px;
+      background: linear-gradient(120deg, #6e9dff, #8a73ed);
+      color: #fff;
+      font: inherit;
+      font-size: 19px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(103, 112, 225, .25);
+      animation: bounceSoft 3.4s ease-in-out infinite;
+    }
+    .clothes-launch:hover { filter: brightness(1.06); }
+    .clothes-launch:focus-visible { outline: 3px solid #2479d8; outline-offset: 4px; }
+
     /* 식생활 학습 프로그램 연결 화면 */
     [hidden] { display: none !important; }
     .meal-launch {
@@ -1016,6 +1035,21 @@
             </div>
           </div>
         </div>
+        <!-- '가정 → 의 → 의복관리'에서 보여주는 외부 프로그램 -->
+        <div class="meal-screen" id="clothesScreen" hidden>
+          <h2 class="meal-heading">👕 의복관리</h2>
+          <p class="meal-subtitle">섬유의 특성과 올바른 의복 관리 방법을 학습해 보세요.</p>
+          <div class="meal-toolbar">
+            <button type="button" class="small-btn" id="backToClothesBtn">← 의 주제로 돌아가기</button>
+            <a class="small-btn" href="https://jhmath11-beep.github.io/gajeong-examples/samples/laundry-care/index.html" target="_blank" rel="noopener noreferrer">새 창에서 크게 열기 ↗</a>
+          </div>
+          <iframe id="clothesFrame" class="meal-frame"
+                  title="의복관리 학습 프로그램"
+                  loading="lazy"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  data-src="https://jhmath11-beep.github.io/gajeong-examples/samples/laundry-care/index.html"></iframe>
+          <p class="meal-note">인터넷 연결이 필요합니다. 화면이 나타나지 않으면 ‘새 창에서 크게 열기’를 누르세요.</p>
+        </div>
         <!-- '가정 → 식 → 하루 식단 분석기'에서 보여주는 프로그램 -->
         <div class="meal-screen" id="mealScreen" hidden>
           <h2 class="meal-heading">🍽️ 하루 식단 분석기</h2>
@@ -1085,7 +1119,24 @@
     const selectionWrap = document.querySelector('#selectionScreen > .selection-wrap');
     const mealScreen = document.getElementById('mealScreen');
     const mealFrame = document.getElementById('mealFrame');
+    const clothesScreen = document.getElementById('clothesScreen');
+    const clothesFrame = document.getElementById('clothesFrame');
+    function openClothesScreen() {
+      mealScreen.hidden = true;
+      selectionWrap.hidden = true;
+      clothesScreen.hidden = false;
+      if (!clothesFrame.getAttribute('src')) clothesFrame.src = clothesFrame.dataset.src;
+      window.scrollTo(0, 0);
+    }
+    function closeClothesScreen() {
+      clothesScreen.hidden = true;
+      selectionWrap.hidden = false;
+      window.scrollTo(0, 0);
+    }
+    document.getElementById('backToClothesBtn').addEventListener('click', closeClothesScreen);
+
     function openMealScreen() {
+      clothesScreen.hidden = true;
       selectionWrap.hidden = true;
       mealScreen.hidden = false;
       if (!mealFrame.src || mealFrame.src === 'about:blank') mealFrame.src = mealFrame.dataset.src;
@@ -1139,10 +1190,15 @@
           ${currentMode === 'home' && item.text === '식'
             ? '<button type="button" class="meal-launch" id="openMealBtn">🍽️ 하루 식단 분석기</button>'
             : ''}
+          ${currentMode === 'home' && item.text === '의'
+            ? '<button type="button" class="clothes-launch" id="openClothesBtn">👕 의복관리</button>'
+            : ''}
         </div>
       `;
       const launch = document.getElementById('openMealBtn');
       if (launch) launch.addEventListener('click', openMealScreen);
+      const clothesLaunch = document.getElementById('openClothesBtn');
+      if (clothesLaunch) clothesLaunch.addEventListener('click', openClothesScreen);
     }
 
     function clearOrbit() {
@@ -1210,6 +1266,7 @@
 
     startButton.addEventListener('click', () => {
       closeMealScreen();
+      closeClothesScreen();
       showScreen('select');
       clearOrbit();
     });
