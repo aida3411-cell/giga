@@ -245,6 +245,84 @@
       border: 1px solid #dbe8f5;
     }
 
+
+    /* 그래픽 모션 버튼: 움직이는 배경, 떠오름, 클릭 반응 */
+    .btn, .grid-btn {
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .25s ease, box-shadow .25s ease, filter .25s ease;
+    }
+    .btn::after, .grid-btn::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      background: linear-gradient(110deg, transparent 15%, rgba(255,255,255,.48) 45%, transparent 70%);
+      transform: translateX(-155%);
+    }
+    .btn:hover::after, .grid-btn:hover::after {
+      animation: shine .7s ease-out 1;
+    }
+    .btn:hover, .grid-btn:hover { transform: translateY(-4px); }
+    .btn:active, .grid-btn:active { transform: translateY(1px) scale(.96); }
+    .btn:not(.secondary) {
+      background: linear-gradient(125deg, #2479d8, #6555d9, #2479d8);
+      background-size: 230% 230%;
+      animation: colorFlow 6s ease-in-out infinite;
+      box-shadow: 0 8px 20px rgba(36,121,216,.28);
+    }
+    .btn:not(.secondary):hover { box-shadow: 0 14px 28px rgba(36,121,216,.36); }
+    .subject-card.grid-btn {
+      padding: 22px 14px;
+      border: 2px solid #dbe9ff;
+      background: linear-gradient(140deg, #edf8ff, #eeeaff, #f0fff8);
+      background-size: 230% 230%;
+      animation: colorFlow 8s ease-in-out infinite;
+      box-shadow: 0 8px 24px rgba(46,91,160,.12);
+    }
+    .subject-card.grid-btn::before {
+      display: block;
+      margin: 0 auto 8px;
+      font-size: 40px;
+      line-height: 1.2;
+      animation: iconFloat 2.8s ease-in-out infinite;
+    }
+    #techButton::before { content: "⚙️"; }
+    #homeEcButton::before { content: "🏡"; animation-delay: -.8s; }
+    .subject-card.grid-btn:hover { box-shadow: 0 14px 30px rgba(46,91,160,.22); }
+    .subject-card.grid-btn.active { color: var(--text); }
+    #categoryGrid .grid-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 98px;
+      background: linear-gradient(140deg,#f5f9ff,#e8efff);
+      box-shadow: 0 5px 14px rgba(36,121,216,.1);
+    }
+    #categoryGrid .grid-btn:nth-child(3n+2) { background: linear-gradient(140deg,#f3fff8,#e8f6ec); }
+    #categoryGrid .grid-btn:nth-child(3n) { background: linear-gradient(140deg,#fff9ef,#ffeedc); }
+    #categoryGrid .grid-btn.active {
+      background: linear-gradient(120deg, #2479d8, #6555d9);
+      color: #fff;
+      box-shadow: 0 10px 24px rgba(56,93,205,.27);
+    }
+    .topic-icon { font-size: 28px; line-height: 1.25; display: inline-block; animation: iconFloat 3.2s ease-in-out infinite; }
+    #categoryGrid .grid-btn:nth-child(even) .topic-icon { animation-delay: -1.3s; }
+    #categoryGrid .grid-btn:hover .topic-icon { animation: iconPop .42s ease-in-out; }
+    @keyframes iconFloat { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-5px) rotate(3deg); } }
+    @keyframes iconPop { 0%,100% { transform: scale(1); } 45% { transform: scale(1.23) rotate(8deg); } }
+    @keyframes colorFlow { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+    @keyframes shine { from { transform: translateX(-155%); } to { transform: translateX(155%); } }
+    @media (prefers-reduced-motion: reduce) {
+      .btn, .grid-btn, .subject-card.grid-btn, .subject-card.grid-btn::before, .topic-icon { animation: none !important; transition: none !important; }
+      .btn:hover::after, .grid-btn:hover::after { animation: none !important; }
+    }
+
     @media (max-width: 860px) {
       .category-layout {
         grid-template-columns: 1fr;
@@ -604,6 +682,13 @@
       }
     };
 
+    const topicIcons = {
+      '의': '👕', '식': '🍽️', '주': '🏠', '가족': '👨‍👩‍👧',
+      '소비': '🛍️', '발달': '🌱', '기술': '⚙️', '발명': '💡',
+      '재료제작': '🛠️', '친환경에너지': '🌞', '수송기술': '🚗',
+      '건설기술': '🏗️', '정보통신기술': '💻', '생명기술': '🧬'
+    };
+
     const categoryTitle = document.getElementById('categoryTitle');
     const categoryDesc = document.getElementById('categoryDesc');
     const categoryGrid = document.getElementById('categoryGrid');
@@ -628,7 +713,13 @@
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'grid-btn';
-        button.textContent = item.text;
+        const icon = document.createElement('span');
+        icon.className = 'topic-icon';
+        icon.setAttribute('aria-hidden', 'true');
+        icon.textContent = topicIcons[item.key] || '✨';
+        const label = document.createElement('span');
+        label.textContent = item.text;
+        button.append(icon, label);
 
         button.addEventListener('click', () => {
           document.querySelectorAll('#categoryGrid .grid-btn').forEach(btn => btn.classList.remove('active'));
