@@ -801,6 +801,51 @@
     @media (prefers-reduced-motion:reduce) {
       .competency-cloud,.sky-cloud,.title-cloud,.action-cloud,.action-icon {animation:none!important;}
     }
+
+    /* 식생활 학습 프로그램 연결 화면 */
+    [hidden] { display: none !important; }
+    .meal-launch {
+      margin-top: 18px;
+      width: min(100%, 290px);
+      border: none;
+      border-radius: 18px;
+      padding: 17px 20px;
+      background: linear-gradient(120deg, #ffb35e, #ff835f);
+      color: #fff;
+      font: inherit;
+      font-size: 19px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(239, 133, 78, .25);
+      animation: bounceSoft 3.4s ease-in-out infinite;
+    }
+    .meal-launch:hover { filter: brightness(1.05); }
+    .meal-launch:focus-visible { outline: 3px solid #2479d8; outline-offset: 4px; }
+    .meal-screen {
+      min-height: 75vh;
+      padding: 18px;
+      border-radius: 24px;
+      background: #f5fbff;
+    }
+    .meal-heading { margin: 8px 0 8px; text-align: center; font-size: clamp(23px, 4vw, 32px); }
+    .meal-subtitle { margin: 0 0 16px; font-size: 15px; }
+    .meal-toolbar { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 16px; }
+    .meal-toolbar a { text-decoration: none; display: inline-flex; align-items:center; justify-content:center; }
+    .meal-frame {
+      display: block;
+      width: 100%;
+      height: min(78vh, 920px);
+      min-height: 580px;
+      background: #fff;
+      border: 2px solid #c9e2f6;
+      border-radius: 16px;
+    }
+    .meal-note { font-size: 13px; margin: 12px 0 0; }
+    @media (max-width: 640px) {
+      .meal-screen { padding: 10px; }
+      .meal-frame { min-height: 650px; height: 80vh; }
+      .meal-toolbar .small-btn { font-size: 13px; }
+    }
   </style>
 </head>
 <body>
@@ -971,6 +1016,21 @@
             </div>
           </div>
         </div>
+        <!-- '가정 → 식 → 하루 식단 분석기'에서 보여주는 프로그램 -->
+        <div class="meal-screen" id="mealScreen" hidden>
+          <h2 class="meal-heading">🍽️ 하루 식단 분석기</h2>
+          <p class="meal-subtitle">하루 식단을 입력하고 식품군의 균형을 분석해 보세요.</p>
+          <div class="meal-toolbar">
+            <button type="button" class="small-btn" id="backToFoodBtn">← 식 주제로 돌아가기</button>
+            <a class="small-btn" href="https://jhmath11-beep.github.io/gajeong-examples/samples/meal-balance/index.html" target="_blank" rel="noopener noreferrer">새 창에서 크게 열기 ↗</a>
+          </div>
+          <iframe id="mealFrame" class="meal-frame"
+                  title="청소년 하루 식단 균형 분석기"
+                  loading="lazy"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  data-src="https://jhmath11-beep.github.io/gajeong-examples/samples/meal-balance/index.html"></iframe>
+          <p class="meal-note">외부 프로그램을 연결하므로 인터넷 연결이 필요합니다. 화면이 표시되지 않으면 ‘새 창에서 크게 열기’를 이용하세요.</p>
+        </div>
       </section>
     </div>
   </div>
@@ -1022,6 +1082,21 @@
     const centerDuo = document.getElementById('centerDuo');
     const orbitTopics = document.getElementById('orbitTopics');
     const artBox = document.getElementById('artBox');
+    const selectionWrap = document.querySelector('#selectionScreen > .selection-wrap');
+    const mealScreen = document.getElementById('mealScreen');
+    const mealFrame = document.getElementById('mealFrame');
+    function openMealScreen() {
+      selectionWrap.hidden = true;
+      mealScreen.hidden = false;
+      if (!mealFrame.src || mealFrame.src === 'about:blank') mealFrame.src = mealFrame.dataset.src;
+      window.scrollTo(0,0);
+    }
+    function closeMealScreen() {
+      mealScreen.hidden = true;
+      selectionWrap.hidden = false;
+      window.scrollTo(0,0);
+    }
+    document.getElementById('backToFoodBtn').addEventListener('click', closeMealScreen);
     const resetOrbitBtn = document.getElementById('resetOrbitBtn');
     const ringEls = [document.getElementById('ring1'), document.getElementById('ring2'), document.getElementById('ring3')];
 
@@ -1061,8 +1136,13 @@
           <p>${item.info}</p>
           <div class="art">${item.art}</div>
           <div class="caption-chip">${item.artTitle}</div>
+          ${currentMode === 'home' && item.text === '식'
+            ? '<button type="button" class="meal-launch" id="openMealBtn">🍽️ 하루 식단 분석기</button>'
+            : ''}
         </div>
       `;
+      const launch = document.getElementById('openMealBtn');
+      if (launch) launch.addEventListener('click', openMealScreen);
     }
 
     function clearOrbit() {
@@ -1129,6 +1209,7 @@
     }
 
     startButton.addEventListener('click', () => {
+      closeMealScreen();
       showScreen('select');
       clearOrbit();
     });
