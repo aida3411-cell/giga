@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>기술가정 수업하기</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+      background: linear-gradient(135deg, #eaf5ff, #edfdf5);
+      color: #17324d;
+    }
+    main {
+      width: 100%;
+      max-width: 480px;
+      padding: 48px 26px;
+      border-radius: 24px;
+      background: #fff;
+      box-shadow: 0 12px 36px rgba(25, 65, 105, 0.12);
+      text-align: center;
+    }
+    h1 {
+      margin: 0 0 16px;
+      font-size: clamp(28px, 7vw, 38px);
+      line-height: 1.3;
+      word-break: keep-all;
+    }
+    p {
+      margin: 0 0 32px;
+      font-size: clamp(15px, 4vw, 18px);
+      line-height: 1.7;
+      color: #52677a;
+      word-break: keep-all;
+    }
+    button {
+      width: 100%;
+      max-width: 260px;
+      min-height: 56px;
+      border: 0;
+      border-radius: 14px;
+      background: #2479d8;
+      color: white;
+      font: inherit;
+      font-size: 20px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button:hover { background: #1764b9; }
+    button:focus-visible { outline: 3px solid #ffbd42; outline-offset: 4px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>기술가정 수업하기</h1>
+    <p>기술과 가정을 쉽고 재미있게 배우는 수업 공간입니다.</p>
+    <button type="button" id="startButton">시작</button>
+  </main>
+  <script>
+    document.getElementById('startButton').addEventListener('click', function () {
+      alert('준비 중');
+    });
+  </script>
+</body>
+</html>
