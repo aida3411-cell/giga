@@ -1,30 +1,54 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>기술가정 수업하기</title>
   <style>
     * { box-sizing: border-box; }
+    :root {
+      --bg1: #eaf5ff;
+      --bg2: #edfdf5;
+      --card: #ffffff;
+      --text: #17324d;
+      --sub: #52677a;
+      --primary: #2479d8;
+      --primary-dark: #1764b9;
+      --soft: #eef5ff;
+      --soft-border: #d9e6f5;
+      --accent: #ffbd42;
+    }
     body {
       margin: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      color: var(--text);
+    }
+    .app {
       min-height: 100vh;
       min-height: 100dvh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
-      font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
-      background: linear-gradient(135deg, #eaf5ff, #edfdf5);
-      color: #17324d;
+      padding: 18px;
     }
-    main {
+    .panel {
       width: 100%;
-      max-width: 480px;
-      padding: 48px 26px;
+      max-width: 980px;
+      padding: 24px;
       border-radius: 24px;
-      background: #fff;
-      box-shadow: 0 12px 36px rgba(25, 65, 105, 0.12);
+      background: var(--card);
+      box-shadow: 0 14px 40px rgba(25, 65, 105, 0.12);
+    }
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    .hero {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 24px 8px;
       text-align: center;
     }
     h1 {
@@ -33,40 +57,601 @@
       line-height: 1.3;
       word-break: keep-all;
     }
+    h2 {
+      margin: 0 0 10px;
+      font-size: clamp(24px, 5vw, 34px);
+      line-height: 1.3;
+      word-break: keep-all;
+      text-align: center;
+    }
     p {
-      margin: 0 0 32px;
+      margin: 0 0 28px;
       font-size: clamp(15px, 4vw, 18px);
       line-height: 1.7;
-      color: #52677a;
+      color: var(--sub);
       word-break: keep-all;
+      text-align: center;
     }
-    button {
-      width: 100%;
-      max-width: 260px;
-      min-height: 56px;
+    .btn,
+    .grid-btn {
       border: 0;
-      border-radius: 14px;
-      background: #2479d8;
-      color: white;
+      border-radius: 16px;
       font: inherit;
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+    .btn:active,
+    .grid-btn:active { transform: scale(0.98); }
+    .btn:focus-visible,
+    .grid-btn:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 4px;
+    }
+    .btn {
+      width: 100%;
+      max-width: 280px;
+      min-height: 56px;
+      padding: 14px 20px;
+      background: var(--primary);
+      color: #fff;
       font-size: 20px;
       font-weight: 700;
-      cursor: pointer;
+      display: block;
+      margin: 0 auto;
     }
-    button:hover { background: #1764b9; }
-    button:focus-visible { outline: 3px solid #ffbd42; outline-offset: 4px; }
+    .btn:hover { background: var(--primary-dark); }
+    .btn.secondary {
+      background: var(--soft);
+      color: var(--primary-dark);
+    }
+    .btn.secondary:hover { background: #dfeeff; }
+
+    .subject-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      max-width: 560px;
+      margin: 24px auto 12px;
+    }
+    .subject-card {
+      min-height: 140px;
+      padding: 18px;
+      border: 1px solid var(--soft-border);
+      border-radius: 20px;
+      background: linear-gradient(180deg, #f9fcff, #f0f7ff);
+      color: var(--text);
+      text-align: center;
+      font-size: 24px;
+      font-weight: 800;
+      box-shadow: 0 8px 20px rgba(36, 121, 216, 0.08);
+    }
+    .subject-card small {
+      display: block;
+      margin-top: 10px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--sub);
+      font-weight: 500;
+    }
+    .subject-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(36, 121, 216, 0.14);
+    }
+
+    .category-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+    .category-panel,
+    .art-panel {
+      border: 1px solid var(--soft-border);
+      border-radius: 20px;
+      padding: 18px;
+      background: #fbfdff;
+    }
+    .section-title {
+      margin: 0 0 8px;
+      font-size: 22px;
+      line-height: 1.4;
+    }
+    .section-desc {
+      margin: 0 0 16px;
+      color: var(--sub);
+      font-size: 15px;
+      line-height: 1.6;
+      text-align: left;
+    }
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .grid-btn {
+      min-height: 62px;
+      padding: 12px 10px;
+      background: #eef5ff;
+      color: #18456f;
+      font-size: 16px;
+      font-weight: 700;
+      border: 1px solid #d7e7fb;
+    }
+    .grid-btn:hover {
+      background: #dfeeff;
+      box-shadow: 0 6px 16px rgba(36, 121, 216, 0.12);
+    }
+    .grid-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+    .art-box {
+      min-height: 430px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #f6fbff, #edf6ff);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .art-box h3 {
+      margin: 0 0 8px;
+      font-size: 24px;
+    }
+    .art-box p {
+      margin: 0 0 18px;
+      font-size: 15px;
+      color: var(--sub);
+      text-align: center;
+    }
+    .art {
+      width: 100%;
+      max-width: 310px;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .art svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 8px 16px rgba(23, 50, 77, 0.08));
+    }
+    .placeholder {
+      color: var(--sub);
+      font-size: 16px;
+      line-height: 1.7;
+      text-align: center;
+    }
+    .nav-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+    .caption-chip {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #35506a;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid #dbe8f5;
+    }
+
+    @media (max-width: 860px) {
+      .category-layout {
+        grid-template-columns: 1fr;
+      }
+      .art-box { min-height: 360px; }
+    }
+    @media (max-width: 560px) {
+      .panel { padding: 18px; border-radius: 20px; }
+      .subject-grid,
+      .category-grid { grid-template-columns: 1fr; }
+      .subject-card { min-height: 120px; }
+      .art-box { min-height: 320px; }
+      .art { max-width: 240px; }
+    }
   </style>
 </head>
 <body>
-  <main>
-    <h1>기술가정 수업하기</h1>
-    <p>기술과 가정을 쉽고 재미있게 배우는 수업 공간입니다.</p>
-    <button type="button" id="startButton">시작</button>
-  </main>
+  <div class="app">
+    <div class="panel">
+      <section class="screen active" id="homeScreen">
+        <div class="hero">
+          <h1>기술가정 수업하기</h1>
+          <p>기술과 가정을 쉽고 재미있게 배우는 수업 공간입니다.</p>
+          <button type="button" class="btn" id="startButton">시작</button>
+        </div>
+      </section>
+
+      <section class="screen" id="subjectScreen">
+        <h2>과목 선택</h2>
+        <p>공부할 과목을 선택해주세요.</p>
+        <div class="subject-grid">
+          <button type="button" class="subject-card grid-btn" id="techButton">
+            기술
+            <small>기술, 발명, 재료제작, 에너지 등 배우기</small>
+          </button>
+          <button type="button" class="subject-card grid-btn" id="homeEcButton">
+            가정
+            <small>의, 식, 주, 가족, 소비, 발달 배우기</small>
+          </button>
+        </div>
+        <div class="nav-row">
+          <button type="button" class="btn secondary" id="backToHome">처음으로</button>
+        </div>
+      </section>
+
+      <section class="screen" id="categoryScreen">
+        <div class="category-layout">
+          <div class="category-panel">
+            <h3 class="section-title" id="categoryTitle">가정 주제 선택</h3>
+            <p class="section-desc" id="categoryDesc">버튼을 누르면 오른쪽에 해당 주제 그림이 나타납니다.</p>
+            <div class="category-grid" id="categoryGrid"></div>
+            <div class="nav-row">
+              <button type="button" class="btn secondary" id="backToSubject">과목 선택으로</button>
+              <button type="button" class="btn secondary" id="backToHomeFromCategory">처음으로</button>
+            </div>
+          </div>
+
+          <div class="art-panel">
+            <div class="art-box" id="artBox">
+              <div class="placeholder">
+                보고 싶은 주제 버튼을 눌러보세요.<br />해당 주제에 맞는 그림이 여기에 나타납니다.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
   <script>
-    document.getElementById('startButton').addEventListener('click', function () {
-      alert('준비 중');
-    });
+    const screens = {
+      home: document.getElementById('homeScreen'),
+      subject: document.getElementById('subjectScreen'),
+      category: document.getElementById('categoryScreen')
+    };
+
+    function showScreen(name) {
+      Object.values(screens).forEach(screen => screen.classList.remove('active'));
+      screens[name].classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    const topics = {
+      home: {
+        title: '가정 주제 선택',
+        desc: '가정 영역의 세부 주제를 선택해보세요.',
+        items: [
+          {
+            key: '의',
+            text: '의',
+            info: '옷과 섬유, 의복 관리와 옷차림을 배우는 주제예요.',
+            artTitle: '옷 그림',
+            art: `
+              <svg viewBox="0 0 240 240" aria-label="옷 그림" xmlns="http://www.w3.org/2000/svg">
+                <rect width="240" height="240" rx="32" fill="#EAF5FF"/>
+                <ellipse cx="120" cy="204" rx="70" ry="10" fill="#D7E8F7"/>
+                <path d="M82 58L98 40H142L158 58L182 73L170 102L152 94V188H88V94L70 102L58 73L82 58Z" fill="#71B8FF" stroke="#1F5B8F" stroke-width="4" stroke-linejoin="round"/>
+                <path d="M98 40C102 53 110 60 120 60C130 60 138 53 142 40" fill="none" stroke="#1F5B8F" stroke-width="4" stroke-linecap="round"/>
+                <path d="M88 188H152" stroke="#1F5B8F" stroke-width="4" stroke-linecap="round"/>
+                <circle cx="120" cy="108" r="4" fill="#1F5B8F"/>
+                <circle cx="120" cy="124" r="4" fill="#1F5B8F"/>
+                <circle cx="120" cy="140" r="4" fill="#1F5B8F"/>
+                <path d="M87 95C97 104 107 108 120 108C133 108 143 104 153 95" fill="none" stroke="#A7D7FF" stroke-width="4" opacity="0.8"/>
+              </svg>`
+          },
+          {
+            key: '식',
+            text: '식',
+            info: '건강한 식생활과 음식 만들기, 영양을 배우는 주제예요.',
+            artTitle: '음식 그림',
+            art: `
+              <svg viewBox="0 0 240 240" aria-label="음식 그림" xmlns="http://www.w3.org/2000/svg">
+                <rect width="240" height="240" rx="32" fill="#FFF5EA"/>
+                <ellipse cx="120" cy="188" rx="76" ry="18" fill="#D8EAF5"/>
+                <ellipse cx="120" cy="135" rx="70" ry="24" fill="#C8DAE7"/>
+                <ellipse cx="120" cy="126" rx="72" ry="26" fill="#FFFFFF" stroke="#D96F3B" stroke-width="5"/>
+                <ellipse cx="120" cy="126" rx="50" ry="16" fill="#FFE7A9"/>
+                <circle cx="94" cy="110" r="11" fill="#FFB54B"/>
+                <circle cx="143" cy="115" r="10" fill="#67C86E"/>
+                <circle cx="125" cy="133" r="8" fill="#F57D58"/>
+                <path d="M86 141C100 132 140 132 154 141" fill="none" stroke="#D96F3B" stroke-width="5" stroke-linecap="round"/>
+                <path d="M179 76C187 85 191 96 191 107" fill="none" stroke="#91C65B" stroke-width="6" stroke-linecap="round"/>
+                <path d="M182 75C184 66 193 59 203 59" fill="none" stroke="#91C65B" stroke-width="6" stroke-linecap="round"/>
+              </svg>`
+          },
+          {
+            key: '주',
+            text: '주',
+            info: '쾌적하고 안전한 주생활, 집과 공간을 배우는 주제예요.',
+            artTitle: '집 그림',
+            art: `
+              <svg viewBox="0 0 240 240" aria-label="집 그림" xmlns="http://www.w3.org/2000/svg">
+                <rect width="240" height="240" rx="32" fill="#EEF8EC"/>
+                <path d="M42 174H198" stroke="#86B874" stroke-width="8" stroke-linecap="round"/>
+                <path d="M50 115L120 58L190 115" fill="none" stroke="#A45B35" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="66" y="108" width="108" height="78" rx="8" fill="#FFD89B" stroke="#A45B35" stroke-width="5"/>
+                <rect x="106" y="140" width="28" height="46" rx="4" fill="#A45B35"/>
+                <rect x="79" y="123" width="22" height="22" rx="4" fill="#BFE5FF" stroke="#A45B35" stroke-width="4"/>
+                <rect x="139" y="123" width="22" height="22" rx="4" fill="#BFE5FF" stroke="#A45B35" stroke-width="4"/>
+                <path d="M166 84V62H180V96" fill="none" stroke="#A45B35" stroke-width="6" stroke-linecap="round"/>
+                <circle cx="127" cy="164" r="3" fill="#FFD89B"/>
+              </svg>`
+          },
+          {
+            key: '가족',
+            text: '가족',
+            info: '가족 관계와 역할, 배려와 소통을 배우는 주제예요.',
+            artTitle: '가족 그림',
+            art: `
+              <svg viewBox="0 0 240 240" aria-label="가족 그림" xmlns="http://www.w3.org/2000/svg">
+                <rect width="240" height="240" rx="32" fill="#FFF0F6"/>
+                <ellipse cx="120" cy="199" rx="72" ry="10" fill="#ECDCE5"/>
+                <circle cx="78" cy="92" r="18" fill="#FFD8B1"/>
+                <circle cx="120" cy="80" r="20" fill="#FFD8B1"/>
+                <circle cx="163" cy="93" r="17" fill="#FFD8B1"/>
+                <circle cx="120" cy="122" r="14" fill="#FFD8B1"/>
+                <path d="M57 157C57 138 69 124 86 124C103 124 115 138 115 157V171H57V157Z" fill="#6CA8FF"/>
+                <path d="M95 147C95 123 108 106 128 106C148 106 161 123 161 147V171H95V147Z" fill="#FF9494"/>
+                <path d="M141 156C141 139 152 128 168 128C184 128 194 139 194 156V171H141V156Z" fill="#7BCB95"/>
+                <path d="M102 175C102 162 110 153 120 153C130 153 138 162 138 175V184H102V175Z" fill="#FFD764"/>
+                <path d="M71 90C74 84 82 82 86 87" fill="none" stroke="#6F513E" stroke-width="3" stroke-linecap="round"/>
+                <path d="M112 73C116 66 126 66 130 73" fill="none" stroke="#6F513E" stroke-width="3" stroke-linecap="round"/>
+                <path d="M157 89C160 84 167 84 170 89" fill="none" stroke="#6F513E" stroke-width="3" stroke-linecap="round"/>
+              </svg>`
+          },
+          {
+            key: '소비',
+            text: '소비',
+            info: '합리적인 소비생활과 용돈 관리, 구매 판단을 배우는 주제예요.',
+            artTitle: '소비 그림',
+            art: `
+              <svg viewBox="0 0 240 240" aria-label="소비 그림" xmlns="http://www.w3.org/2000/svg">
+                <rect width="240" height="240" rx="32" fill="#EEF8FF"/>
+                <ellipse cx="120" cy="196" rx="72" ry="10" fill="#DBEAF5"/>
+                <rect x="50" y="76" width="140" height="92" rx="12" fill="#7CD0A8" stroke="#22674E" stroke-width="5"/>
+                <circle cx="120" cy="122" r="24" fill="#FFF4B7" stroke="#22674E" stroke-width="5"/>
+                <path d="M120 108V136" stroke="#22674E" stroke-width="5" stroke-linecap="round"/>
+                <path d="M109 116C112 111 116 109 122 109C128 109 133 113 133 118C133 124 129 127 122 129C114 131 109 135 109 141C109 147 114 150 121 150C127 150 132 147 135 143" fill="none" stroke="#22674E" stroke-width="5" stroke-linecap="round"/>
+                <path d="M71 88C80 71 107 65 128 75" fill="none" stroke="#5EA2E8" stroke-width="6" stroke-linecap="round"/>
+                <circle cx="161" cy="155" r="23" fill="none" stroke="#E26D5C" stroke-width="6"/>
+                <path d="M177 171L192 186" stroke="#E26D5C" stroke-width="8" stroke-linecap="round"/>
+              </svg>`
+          },
+          {
+            key: '발달',
+            text: '발달',
+            info: '청소년기의 성장과 발달, 자아 이해를 배우는 주제예요.',
+            artTitle: '발달 그림',
+            art: `
+              <svg viewBox="0 0 240 240" aria-label="발달 그림" xmlns="http://www.w3.org/2000/svg">
+                <rect width="240" height="240" rx="32" fill="#F2F8E8"/>
+                <ellipse cx="120" cy="200" rx="70" ry="10" fill="#DFE8D2"/>
+                <path d="M120 183C120 155 135 140 154 129C170 120 180 108 180 90C180 62 156 42 120 42C84 42 60 62 60 90C60 108 70 120 86 129C105 140 120 155 120 183Z" fill="#91D16C" stroke="#497F33" stroke-width="5"/>
+                <path d="M120 183V99" stroke="#497F33" stroke-width="5" stroke-linecap="round"/>
+                <path d="M120 118C103 110 91 95 85 77" fill="none" stroke="#497F33" stroke-width="5" stroke-linecap="round"/>
+                <path d="M120 109C136 100 149 86 155 69" fill="none" stroke="#497F33" stroke-width="5" stroke-linecap="round"/>
+                <circle cx="120" cy="184" r="10" fill="#8E5F43"/>
+                <circle cx="92" cy="96" r="5" fill="#BDE3A0"/>
+                <circle cx="152" cy="97" r="5" fill="#BDE3A0"/>
+              </svg>`
+          }
+        ]
+      },
+      tech: {
+        title: '기술 주제 선택',
+        desc: '기술 영역의 세부 주제를 선택해보세요.',
+        items: [
+          {
+            key: '기술',
+            text: '기술',
+            info: '기술의 의미와 우리 생활 속 기술 활용을 배우는 주제예요.',
+            artTitle: '기술 그림',
+            art: `
+              <svg viewBox="0 0 240 240" aria-label="기술 그림" xmlns="http://www.w3.org/2000/svg">
+                <rect width="240" height="240" rx="32" fill="#EEF6FF"/>
+                <ellipse cx="120" cy="199" rx="72" ry="10" fill="#D9E8F7"/>
+                <circle cx="120" cy="120" r="34" fill="#8CC2FF" stroke="#245D94" stroke-width="5"/>
+                <g fill="#8CC2FF" stroke="#245D94" stroke-width="5">
+                  <rect x="113" y="45" width="14" height="30" rx="4"/>
+                  <rect x="113" y="165" width="14" height="30" rx="4"/>
+                  <rect x="165" y="113" width="30" height="14" rx="4"/>
+                  <rect x="45" y="113" width="30" height="14" rx="4"/>
+                  <rect x="151" y="66" width="14" height="28" rx="4" transform="rotate(45 158 80)"/>
+                  <rect x="75" y="146" width="14" height="28" rx="4" transform="rotate(45 82 160)"/>
+                  <rect x="146" y="151" width="28" height="14" rx="4" transform="rotate(45 160 158)"/>
+                  <rect x="66" y="75" width="28" height="14" rx="4" transform="rotate(45 80 82)"/>
+                </g>
+                <circle cx="120" cy="120" r="12" fill="#ffffff" stroke="#245D94" stroke-width="5"/>
+              </svg>`
+          },
+          {
+            key: '발명',
+            text: '발명',
+            info: '새로운 아이디어를 생각하고 문제를 해결하는 발명을 배우는 주제예요.',
+            artTitle: '발명 그림',
+            art: `
+              <svg viewBox="0 0 240 240" aria-label="발명 그림" xmlns="http://www.w3.org/2000/svg">
+                <rect width="240" height="240" rx="32" fill="#FFF7DF"/>
+                <ellipse cx="120" cy="198" rx="72" ry="10" fill="#EADFB3"/>
+                <path d="M120 55C90 55 67 78 67 109C67 130 78 144 91 156C97 162 101 169 102 176H138C139 169 143 162 149 156C162 144 173 130 173 109C173 78 150 55 120 55Z" fill="#FFD764" stroke="#A86A00" stroke-width="5"/>
+                <path d="M105 177H135" stroke="#5A6B7C" stroke-width="5" stroke-linecap="round"/>
+                <rect x="101" y="176" width="38" height="18" rx="6" fill="#B6C7D8" stroke="#5A6B7C" stroke-width="5"/>
+                <rect x="104" y="194" width="32" height="12" rx="5" fill="#8A99A8"/>
+                <path d="M92 43L84 27 M148 43L156 27 M176 74L193 67 M47 68L64 74" stroke="#F2B400" stroke-width="6" stroke-linecap="round"/>
+              </svg>`
+          },
+          {
+            key: '재료제작',
+            text: '재료제작',
+            info: '다양한 재료의 특성과 만들기 과정을 배우는 주제예요.',
+            artTitle: '재료제작 그림',
+            art: `
+              <svg viewBox="0 0 240 240" aria-label="재료제작 그림" xmlns="http://www.w3.org/2000/svg">
+                <rect width="240" height="240" rx="32" fill="#F3F7FA"/>
+                <ellipse cx="120" cy="197" rx="72" ry="10" fill="#DEE6EC"/>
+                <rect x="57" y="154" width="126" height="18" rx="7" fill="#B98A5C"/>
+                <rect x="76" y="121" width="57" height="33" rx="6" fill="#91B9D9" stroke="#335F82" stroke-width="5"/>
+                <path d="M157 65L176 84L122 138L104 138L104 119L157 65Z" fill="#FFD18E" stroke="#935D24" stroke-width="5"/>
+                <path d="M176 84L185 75L194 84L185 93Z" fill="#FF8F8F" stroke="#935D24" stroke-width="5"/>
+                <rect x="140" y="139" width="28" height="15" rx="4" fill="#6E4D33"/>
+              </svg>`
+          },
+          {
+            key: '친환경에너지',
+            text: '친환경에너지',
+            info: '태양광, 바람 등 환경을 생각하는 에너지를 배우는 주제예요.',
+            artTitle: '친환경에너지 그림',
+            art: `
+              <svg viewBox="0 0 240 240" aria-label="친환경에너지 그림" xmlns="http://www.w3.org/2000/svg">
+                <rect width="240" height="240" rx="32" fill="#EDF8EC"/>
+                <path d="M40 186H200" stroke="#7AB36B" stroke-width="8" stroke-linecap="round"/>
+                <circle cx="66" cy="63" r="23" fill="#FFD45A"/>
+                <rect x="46" y="146" width="82" height="42" rx="8" fill="#5B95D6" stroke="#295985" stroke-width="5"/>
+                <path d="M86 146V126" stroke="#7A8EA3" stroke-width="6"/>
+                <path d="M56 161H116M56 174H116M66 146V188M86 146V188M106 146V188" stroke="#CFE7FF" stroke-width="3"/>
+                <path d="M166 188V104" stroke="#7A8EA3" stroke-width="6" stroke-linecap="round"/>
+                <circle cx="166" cy="88" r="8" fill="#7A8EA3"/>
+                <path d="M166 54L180 88L166 82L152 88Z" fill="#BFE8FF" stroke="#2F6C93" stroke-width="4" stroke-linejoin="round"/>
+                <path d="M131 95L166 82L160 96L166 110Z" fill="#BFE8FF" stroke="#2F6C93" stroke-width="4" stroke-linejoin="round"/>
+                <path d="M201 95L166 82L172 96L166 110Z" fill="#BFE8FF" stroke="#2F6C93" stroke-width="4" stroke-linejoin="round"/>
+              </svg>`
+          },
+          {
+            key: '수송기술',
+            text: '수송기술',
+            info: '사람과 물건을 이동시키는 다양한 수송기술을 배우는 주제예요.',
+            artTitle: '수송기술 그림',
+            art: `
+              <svg viewBox="0 0 240 240" aria-label="수송기술 그림" xmlns="http://www.w3.org/2000/svg">
+                <rect width="240" height="240" rx="32" fill="#EEF6FF"/>
+                <path d="M42 177H198" stroke="#A9BACB" stroke-width="7" stroke-linecap="round"/>
+                <path d="M49 145L67 109C71 100 80 94 90 94H145C154 94 162 99 168 107L189 133V160H49V145Z" fill="#FF8E7B" stroke="#954133" stroke-width="5"/>
+                <rect x="82" y="107" width="34" height="23" rx="5" fill="#DDF1FF"/>
+                <rect x="121" y="107" width="31" height="23" rx="5" fill="#DDF1FF"/>
+                <circle cx="82" cy="161" r="17" fill="#313B45"/>
+                <circle cx="157" cy="161" r="17" fill="#313B45"/>
+                <circle cx="82" cy="161" r="7" fill="#C7D2DB"/>
+                <circle cx="157" cy="161" r="7" fill="#C7D2DB"/>
+                <circle cx="181" cy="144" r="4" fill="#FFE28A"/>
+              </svg>`
+          },
+          {
+            key: '건설기술',
+            text: '건설기술',
+            info: '건축물과 구조물, 안전한 건설 과정을 배우는 주제예요.',
+            artTitle: '건설기술 그림',
+            art: `
+              <svg viewBox="0 0 240 240" aria-label="건설기술 그림" xmlns="http://www.w3.org/2000/svg">
+                <rect width="240" height="240" rx="32" fill="#FFF6E8"/>
+                <path d="M40 190H200" stroke="#8E5F43" stroke-width="6" stroke-linecap="round"/>
+                <rect x="53" y="111" width="52" height="79" rx="4" fill="#9AD0FF" stroke="#3B6D94" stroke-width="5"/>
+                <rect x="106" y="84" width="45" height="106" rx="4" fill="#7AB9F0" stroke="#3B6D94" stroke-width="5"/>
+                <rect x="152" y="58" width="36" height="132" rx="4" fill="#5EA2E8" stroke="#3B6D94" stroke-width="5"/>
+                <path d="M39 61H109" stroke="#E0A82F" stroke-width="8" stroke-linecap="round"/>
+                <path d="M74 61V93" stroke="#E0A82F" stroke-width="8" stroke-linecap="round"/>
+                <path d="M74 93L114 109" stroke="#E0A82F" stroke-width="8" stroke-linecap="round"/>
+                <rect x="108" y="103" width="12" height="12" fill="#E0A82F"/>
+              </svg>`
+          },
+          {
+            key: '정보통신기술',
+            text: '정보통신기술',
+            info: '컴퓨터와 인터넷, 디지털 소통 기술을 배우는 주제예요.',
+            artTitle: '정보통신기술 그림',
+            art: `
+              <svg viewBox="0 0 240 240" aria-label="정보통신기술 그림" xmlns="http://www.w3.org/2000/svg">
+                <rect width="240" height="240" rx="32" fill="#EFF4FF"/>
+                <ellipse cx="120" cy="197" rx="72" ry="10" fill="#DEE5F4"/>
+                <rect x="49" y="62" width="142" height="92" rx="10" fill="#A6CAFF" stroke="#35689A" stroke-width="5"/>
+                <rect x="69" y="82" width="102" height="52" rx="6" fill="#EAF4FF"/>
+                <rect x="98" y="154" width="44" height="12" rx="4" fill="#6C7D8F"/>
+                <rect x="84" y="166" width="72" height="10" rx="4" fill="#9DB0C2"/>
+                <path d="M87 121C96 106 116 100 132 108C143 114 151 113 159 105" fill="none" stroke="#5A8BE0" stroke-width="5" stroke-linecap="round"/>
+                <path d="M78 186C90 169 107 160 120 160C133 160 150 169 162 186" fill="none" stroke="#4FC1A4" stroke-width="6" stroke-linecap="round"/>
+                <circle cx="120" cy="188" r="6" fill="#4FC1A4"/>
+              </svg>`
+          },
+          {
+            key: '생명기술',
+            text: '생명기술',
+            info: '생명과학을 바탕으로 한 기술과 활용을 배우는 주제예요.',
+            artTitle: '생명기술 그림',
+            art: `
+              <svg viewBox="0 0 240 240" aria-label="생명기술 그림" xmlns="http://www.w3.org/2000/svg">
+                <rect width="240" height="240" rx="32" fill="#EEFBEF"/>
+                <ellipse cx="120" cy="198" rx="72" ry="10" fill="#DDEDDD"/>
+                <path d="M92 62C70 78 65 104 80 126C95 147 116 150 120 170C124 150 145 147 160 126C175 104 170 78 148 62" fill="none" stroke="#4AA86A" stroke-width="8" stroke-linecap="round"/>
+                <path d="M92 62C99 78 111 92 120 104C129 92 141 78 148 62" fill="none" stroke="#4AA86A" stroke-width="8" stroke-linecap="round"/>
+                <path d="M120 52V188" stroke="#4AA86A" stroke-width="6" stroke-linecap="round"/>
+                <circle cx="79" cy="175" r="21" fill="#BFE8FF" stroke="#43739A" stroke-width="5"/>
+                <circle cx="163" cy="175" r="21" fill="#FFD7E4" stroke="#9A4963" stroke-width="5"/>
+                <path d="M79 163V187M67 175H91" stroke="#43739A" stroke-width="5" stroke-linecap="round"/>
+                <path d="M151 175H175" stroke="#9A4963" stroke-width="5" stroke-linecap="round"/>
+              </svg>`
+          }
+        ]
+      }
+    };
+
+    const categoryTitle = document.getElementById('categoryTitle');
+    const categoryDesc = document.getElementById('categoryDesc');
+    const categoryGrid = document.getElementById('categoryGrid');
+    const artBox = document.getElementById('artBox');
+
+    function renderArt(item) {
+      artBox.innerHTML = `
+        <h3>${item.text}</h3>
+        <p>${item.info}</p>
+        <div class="art">${item.art}</div>
+        <div class="caption-chip">${item.artTitle}</div>
+      `;
+    }
+
+    function renderCategoryScreen(mode) {
+      const data = topics[mode];
+      categoryTitle.textContent = data.title;
+      categoryDesc.textContent = data.desc;
+      categoryGrid.innerHTML = '';
+
+      data.items.forEach((item, index) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'grid-btn';
+        button.textContent = item.text;
+
+        button.addEventListener('click', () => {
+          document.querySelectorAll('#categoryGrid .grid-btn').forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          renderArt(item);
+        });
+
+        categoryGrid.appendChild(button);
+
+        if (index === 0) {
+          setTimeout(() => button.click(), 0);
+        }
+      });
+
+      showScreen('category');
+    }
+
+    document.getElementById('startButton').addEventListener('click', () => showScreen('subject'));
+    document.getElementById('backToHome').addEventListener('click', () => showScreen('home'));
+    document.getElementById('backToSubject').addEventListener('click', () => showScreen('subject'));
+    document.getElementById('backToHomeFromCategory').addEventListener('click', () => showScreen('home'));
+    document.getElementById('techButton').addEventListener('click', () => renderCategoryScreen('tech'));
+    document.getElementById('homeEcButton').addEventListener('click', () => renderCategoryScreen('home'));
   </script>
 </body>
 </html>
