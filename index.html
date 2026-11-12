@@ -7,8 +7,9 @@
   <style>
     * { box-sizing: border-box; }
     :root {
-      --bg1: #eaf5ff;
-      --bg2: #edfdf5;
+      --sky-top: #bfe7ff;
+      --sky-mid: #dff3ff;
+      --sky-bottom: #f6fcff;
       --card: #ffffff;
       --text: #17324d;
       --sub: #52677a;
@@ -24,7 +25,7 @@
       min-height: 100vh;
       min-height: 100dvh;
       font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
-      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      background: linear-gradient(180deg, #9cdcff 0%, #c9ecff 22%, #e7f7ff 58%, #f8fdff 100%);
       color: var(--text);
       overflow-x: hidden;
     }
@@ -41,121 +42,19 @@
       max-width: 1180px;
       padding: 24px;
       border-radius: 28px;
-      background: rgba(255,255,255,0.92);
-      backdrop-filter: blur(4px);
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(5px);
       box-shadow: var(--shadow);
     }
     .screen { display: none; }
     .screen.active { display: block; }
 
-    /* 첫 화면 */
-    .hero {
-      position: relative;
-      min-height: 690px;
-      overflow: hidden;
-      border-radius: 26px;
-      background: linear-gradient(180deg, #eaf5ff 0%, #f8fcff 55%, #effcf4 100%);
-      border: 1px solid #dcebf8;
-      padding: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .hero-inner {
-      position: relative;
-      z-index: 5;
-      max-width: 560px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 38px 24px 28px;
-      border-radius: 28px;
-      background: rgba(255,255,255,0.78);
-      box-shadow: 0 16px 38px rgba(71, 116, 164, 0.12);
-      backdrop-filter: blur(3px);
-      text-align: center;
-    }
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
-      border-radius: 999px;
-      background: #ffffff;
-      color: #356089;
-      border: 1px solid #d8e8f8;
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 16px;
-      box-shadow: 0 8px 20px rgba(53, 96, 137, 0.08);
-    }
-    h1 {
-      margin: 0 0 14px;
-      font-size: clamp(30px, 7vw, 46px);
-      line-height: 1.22;
-      word-break: keep-all;
-      letter-spacing: -0.04em;
-    }
-    p {
-      margin: 0 0 24px;
-      font-size: clamp(15px, 3.8vw, 18px);
-      line-height: 1.7;
-      color: var(--sub);
-      word-break: keep-all;
-      text-align: center;
-    }
-
-    .cloud {
-      position: absolute;
-      z-index: 1;
-      background: rgba(255,255,255,0.95);
-      border: 1px solid rgba(220,235,248,0.95);
-      box-shadow: 0 10px 26px rgba(100, 141, 185, 0.12);
-      border-radius: 999px;
-      animation: cloudFloat linear infinite;
-      will-change: transform;
-    }
-    .cloud::before,
-    .cloud::after {
-      content: "";
-      position: absolute;
-      background: inherit;
-      border: inherit;
-      border-radius: 999px;
-    }
-    .cloud::before { width: 42%; height: 70%; left: 11%; top: -32%; }
-    .cloud::after { width: 35%; height: 60%; right: 12%; top: -22%; }
-    .cloud.one { width: 150px; height: 52px; left: -20%; top: 16%; animation-duration: 28s; animation-delay: -4s; }
-    .cloud.two { width: 118px; height: 42px; left: -18%; top: 38%; animation-duration: 34s; animation-delay: -12s; }
-    .cloud.three { width: 175px; height: 60px; left: -25%; top: 70%; animation-duration: 30s; animation-delay: -8s; }
-    .cloud.four { width: 132px; height: 46px; left: -22%; top: 56%; animation-duration: 39s; animation-delay: -17s; }
-
-    .floating-keyword {
-      position: absolute;
-      z-index: 2;
-      padding: 10px 16px;
-      background: rgba(255,255,255,0.92);
-      color: #38638a;
-      border-radius: 999px;
-      border: 1px solid #d7e8f8;
-      font-size: 14px;
-      font-weight: 700;
-      white-space: nowrap;
-      box-shadow: 0 12px 26px rgba(95, 138, 183, 0.12);
-      animation: bob 5.6s ease-in-out infinite;
-    }
-    .kw1 { left: 8%; top: 12%; animation-delay: 0s; }
-    .kw2 { left: 14%; top: 58%; animation-delay: -1.4s; }
-    .kw3 { right: 8%; top: 14%; animation-delay: -0.8s; }
-    .kw4 { right: 11%; top: 61%; animation-delay: -2.2s; }
-    .kw5 { left: 50%; transform: translateX(-50%); top: 8%; animation-delay: -1.8s; }
-    .kw6 { left: 50%; transform: translateX(-50%); bottom: 10%; animation-delay: -3s; }
-    .kw7 { left: 5%; top: 31%; animation-delay: -2.6s; }
-    .kw8 { right: 5%; top: 38%; animation-delay: -3.8s; }
-
+    /* 공통 버튼 */
     .btn,
     .circle-btn,
     .topic-btn,
-    .small-btn {
+    .small-btn,
+    .competency-cloud {
       border: 0;
       cursor: pointer;
       font: inherit;
@@ -164,14 +63,16 @@
     .btn:focus-visible,
     .circle-btn:focus-visible,
     .topic-btn:focus-visible,
-    .small-btn:focus-visible {
+    .small-btn:focus-visible,
+    .competency-cloud:focus-visible {
       outline: 3px solid var(--accent);
       outline-offset: 4px;
     }
     .btn:active,
     .circle-btn:active,
     .topic-btn:active,
-    .small-btn:active { transform: scale(0.97); }
+    .small-btn:active,
+    .competency-cloud:active { transform: scale(0.97); }
 
     .btn {
       position: relative;
@@ -193,7 +94,8 @@
     }
     .btn::after,
     .circle-btn::after,
-    .topic-btn::after {
+    .topic-btn::after,
+    .competency-cloud::after {
       content: "";
       position: absolute;
       inset: 0;
@@ -204,15 +106,252 @@
     }
     .btn:hover,
     .circle-btn:hover,
-    .topic-btn:hover {
+    .topic-btn:hover,
+    .competency-cloud:hover {
       transform: translateY(-4px) scale(1.02);
       box-shadow: 0 18px 30px rgba(36, 121, 216, 0.2);
     }
     .btn:hover::after,
     .circle-btn:hover::after,
-    .topic-btn:hover::after { transform: translateX(135%) skewX(-25deg); }
+    .topic-btn:hover::after,
+    .competency-cloud:hover::after { transform: translateX(135%) skewX(-25deg); }
 
-    /* 두 번째 화면 */
+    /* 첫 화면 */
+    .hero {
+      position: relative;
+      min-height: 730px;
+      overflow: hidden;
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(255,255,255,0.65) 0 7%, transparent 8%),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.5) 0 6%, transparent 7%),
+        linear-gradient(180deg, #95d8ff 0%, #beeaff 28%, #e6f7ff 70%, #f7fcff 100%);
+      border: 1px solid #d6edf9;
+      padding: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sky-cloud {
+      position: absolute;
+      z-index: 1;
+      opacity: 0.92;
+      animation: drift linear infinite;
+      will-change: transform;
+      filter: drop-shadow(0 10px 18px rgba(120, 157, 193, 0.10));
+    }
+    .sky-cloud svg { display: block; width: 100%; height: auto; }
+    .sky-cloud.one { width: 220px; left: -18%; top: 9%; animation-duration: 34s; animation-delay: -3s; }
+    .sky-cloud.two { width: 170px; left: -14%; top: 30%; animation-duration: 40s; animation-delay: -14s; }
+    .sky-cloud.three { width: 260px; left: -22%; top: 60%; animation-duration: 38s; animation-delay: -8s; }
+    .sky-cloud.four { width: 150px; left: -16%; top: 79%; animation-duration: 44s; animation-delay: -19s; }
+    .sky-cloud.five { width: 200px; left: -20%; top: 46%; animation-duration: 48s; animation-delay: -24s; }
+
+    .hero-content {
+      position: relative;
+      z-index: 5;
+      width: 100%;
+      min-height: 660px;
+    }
+
+    .title-cloud {
+      position: relative;
+      width: min(100%, 620px);
+      margin: 0 auto 24px;
+      padding: 48px 32px 36px;
+      text-align: center;
+      background: rgba(255,255,255,0.96);
+      border: 1px solid #d7ebfa;
+      box-shadow: 0 16px 38px rgba(71, 116, 164, 0.12);
+      border-radius: 110px;
+      z-index: 4;
+      animation: titleFloat 5.4s ease-in-out infinite;
+    }
+    .title-cloud::before,
+    .title-cloud::after {
+      content: "";
+      position: absolute;
+      background: rgba(255,255,255,0.96);
+      border: 1px solid #d7ebfa;
+      border-radius: 50%;
+      z-index: -1;
+    }
+    .title-cloud::before {
+      width: 140px; height: 110px;
+      left: 26px; top: -40px;
+      box-shadow: 0 10px 18px rgba(71,116,164,0.08);
+    }
+    .title-cloud::after {
+      width: 170px; height: 128px;
+      right: 30px; top: -52px;
+      box-shadow: 0 10px 18px rgba(71,116,164,0.08);
+    }
+    .title-cloud .puff-a,
+    .title-cloud .puff-b {
+      position: absolute;
+      background: rgba(255,255,255,0.96);
+      border: 1px solid #d7ebfa;
+      border-radius: 50%;
+      z-index: -1;
+      box-shadow: 0 10px 18px rgba(71,116,164,0.08);
+    }
+    .title-cloud .puff-a { width: 92px; height: 74px; left: -8px; top: 24px; }
+    .title-cloud .puff-b { width: 94px; height: 76px; right: -12px; top: 36px; }
+
+    h1 {
+      margin: 0 0 14px;
+      font-size: clamp(32px, 7vw, 48px);
+      line-height: 1.18;
+      word-break: keep-all;
+      letter-spacing: -0.04em;
+    }
+    p {
+      margin: 0 0 24px;
+      font-size: clamp(15px, 3.8vw, 18px);
+      line-height: 1.7;
+      color: var(--sub);
+      word-break: keep-all;
+      text-align: center;
+    }
+
+    .cloud-field {
+      position: relative;
+      min-height: 290px;
+      margin: 10px auto 28px;
+    }
+
+    .competency-cloud {
+      position: absolute;
+      padding: 0;
+      background: transparent;
+      box-shadow: none;
+      overflow: visible;
+      animation: cloudBob 5.3s ease-in-out infinite;
+    }
+    .competency-cloud .cloud-shape {
+      position: relative;
+      min-width: 120px;
+      padding: 18px 22px;
+      background: rgba(255,255,255,0.95);
+      border: 1px solid #d7ebfa;
+      border-radius: 999px;
+      box-shadow: 0 14px 24px rgba(93, 136, 176, 0.12);
+      color: #355e86;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.35;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .competency-cloud .cloud-shape::before,
+    .competency-cloud .cloud-shape::after {
+      content: "";
+      position: absolute;
+      background: rgba(255,255,255,0.95);
+      border: 1px solid #d7ebfa;
+      border-radius: 50%;
+      z-index: -1;
+    }
+    .competency-cloud .cloud-shape::before {
+      width: 44px; height: 38px; left: 12px; top: -16px;
+    }
+    .competency-cloud .cloud-shape::after {
+      width: 52px; height: 42px; right: 16px; top: -18px;
+    }
+    .competency-cloud.active .cloud-shape {
+      background: linear-gradient(180deg, #ffffff, #eef8ff);
+      border-color: #7ec7ff;
+      color: #21649a;
+      transform: scale(1.06);
+      box-shadow: 0 18px 30px rgba(77, 143, 194, 0.18);
+    }
+    .competency-cloud.k1 { left: 4%; top: 10%; animation-delay: 0s; }
+    .competency-cloud.k2 { left: 12%; top: 58%; animation-delay: -1.2s; }
+    .competency-cloud.k3 { right: 4%; top: 13%; animation-delay: -0.6s; }
+    .competency-cloud.k4 { right: 10%; top: 59%; animation-delay: -2.1s; }
+    .competency-cloud.k5 { left: 50%; top: 0%; transform: translateX(-50%); animation-name: cloudBobCenter; animation-delay: -1.5s; }
+    .competency-cloud.k6 { left: 50%; bottom: 1%; transform: translateX(-50%); animation-name: cloudBobCenter; animation-delay: -2.7s; }
+    .competency-cloud.k7 { left: 0%; top: 34%; animation-delay: -2.6s; }
+    .competency-cloud.k8 { right: 0%; top: 34%; animation-delay: -3.6s; }
+
+    .competency-display {
+      width: min(100%, 540px);
+      margin: 0 auto;
+      position: relative;
+      min-height: 150px;
+      z-index: 4;
+    }
+    .action-cloud {
+      position: relative;
+      min-height: 150px;
+      padding: 32px 28px 26px;
+      background: rgba(255,255,255,0.97);
+      border: 1px solid #cfe8fa;
+      border-radius: 110px;
+      box-shadow: 0 20px 40px rgba(84, 130, 174, 0.15);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      animation: actionPop 0.55s ease, actionFloat 4.2s ease-in-out infinite 0.55s;
+    }
+    .action-cloud.show { display: flex; }
+    .action-cloud::before,
+    .action-cloud::after {
+      content: "";
+      position: absolute;
+      background: rgba(255,255,255,0.97);
+      border: 1px solid #cfe8fa;
+      border-radius: 50%;
+      z-index: -1;
+      box-shadow: 0 12px 20px rgba(84, 130, 174, 0.08);
+    }
+    .action-cloud::before { width: 130px; height: 100px; left: 25px; top: -34px; }
+    .action-cloud::after { width: 145px; height: 112px; right: 24px; top: -42px; }
+    .action-cloud .puff1,
+    .action-cloud .puff2 {
+      position: absolute;
+      background: rgba(255,255,255,0.97);
+      border: 1px solid #cfe8fa;
+      border-radius: 50%;
+      z-index: -1;
+      box-shadow: 0 12px 20px rgba(84, 130, 174, 0.08);
+    }
+    .action-cloud .puff1 { width: 80px; height: 68px; left: -8px; bottom: 25px; }
+    .action-cloud .puff2 { width: 88px; height: 72px; right: -10px; bottom: 28px; }
+    .action-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+      animation: sparklePop 1.8s ease-in-out infinite;
+    }
+    .action-title {
+      margin: 0 0 6px;
+      font-size: clamp(22px, 5vw, 28px);
+      font-weight: 900;
+      color: #1f5d92;
+    }
+    .action-desc {
+      margin: 0;
+      font-size: 15px;
+      color: #4c6984;
+      line-height: 1.7;
+    }
+    .orbit-sparkle {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff8b1 0%, #ffd666 58%, rgba(255,214,102,0) 62%);
+      animation: sparkleOrbit 3s linear infinite;
+      pointer-events: none;
+    }
+    .s1 { top: 8px; left: 18%; animation-delay: 0s; }
+    .s2 { top: 24px; right: 18%; animation-delay: -1s; }
+    .s3 { bottom: 18px; left: 50%; animation-delay: -2s; }
+
+    /* 두번째 화면 */
     .selection-wrap {
       border-radius: 24px;
       background: linear-gradient(180deg, #f8fbff, #f2fbf6);
@@ -315,10 +454,6 @@
       font-weight: 900;
       letter-spacing: -0.03em;
     }
-    .circle-btn.small {
-      width: 118px;
-      height: 118px;
-    }
     .circle-btn.selected {
       width: 170px;
       height: 170px;
@@ -329,6 +464,9 @@
     }
     .circle-btn.selected .label { font-size: clamp(32px, 4.5vw, 46px); }
     .circle-btn.dim {
+      /* 선택하지 않은 과목은 레이아웃에서도 제외해
+         선택한 과목이 원형 메뉴의 정확한 중앙에 오도록 합니다. */
+      display: none;
       opacity: 0;
       pointer-events: none;
       transform: scale(0.7);
@@ -476,24 +614,45 @@
     }
     .small-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 18px rgba(65,104,145,0.12); }
 
-    @keyframes cloudFloat {
+    @keyframes drift {
       0% { transform: translateX(0) translateY(0); }
-      50% { transform: translateX(60vw) translateY(-8px); }
+      50% { transform: translateX(60vw) translateY(-10px); }
       100% { transform: translateX(130vw) translateY(0); }
-    }
-    @keyframes bob {
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
-    }
-    .kw5, .kw6 { animation-name: bobCenter; }
-    @keyframes bobCenter {
-      0%,100% { transform: translateX(-50%) translateY(0); }
-      50% { transform: translateX(-50%) translateY(-12px); }
     }
     @keyframes gradientFlow {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
+    }
+    @keyframes cloudBob {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+    @keyframes cloudBobCenter {
+      0%,100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-12px); }
+    }
+    @keyframes titleFloat {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    @keyframes actionPop {
+      0% { opacity: 0; transform: scale(0.78) rotate(-3deg); }
+      70% { opacity: 1; transform: scale(1.04) rotate(2deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+    @keyframes actionFloat {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes sparkleOrbit {
+      0% { transform: translateY(0) scale(0.8); opacity: 0.6; }
+      50% { transform: translateY(-10px) scale(1.15); opacity: 1; }
+      100% { transform: translateY(0) scale(0.8); opacity: 0.6; }
+    }
+    @keyframes sparklePop {
+      0%,100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.16) rotate(8deg); }
     }
     @keyframes floatIcon {
       0%,100% { transform: translateY(0); }
@@ -529,17 +688,29 @@
       .selection-area { grid-template-columns: 1fr; }
       .art-box { min-height: 380px; }
       .orbital-board { height: 530px; }
+      .cloud-field { min-height: 350px; }
     }
-    @media (max-width: 680px) {
-      .hero { min-height: 720px; padding: 18px; }
-      .hero-inner { padding: 30px 18px 22px; }
-      .floating-keyword { font-size: 12px; padding: 8px 12px; }
-      .kw1 { left: 4%; top: 13%; }
-      .kw2 { left: 4%; top: 58%; }
-      .kw3 { right: 4%; top: 14%; }
-      .kw4 { right: 2%; top: 60%; }
-      .kw7 { left: 3%; top: 32%; }
-      .kw8 { right: 1%; top: 38%; }
+    @media (max-width: 760px) {
+      .hero { min-height: 840px; padding: 18px; }
+      .hero-content { min-height: 780px; }
+      .title-cloud { padding: 42px 22px 30px; }
+      .title-cloud::before { width: 106px; height: 82px; left: 20px; top: -28px; }
+      .title-cloud::after { width: 126px; height: 96px; right: 18px; top: -34px; }
+      .cloud-field { min-height: 410px; }
+      .competency-cloud .cloud-shape { font-size: 12px; padding: 15px 17px; min-width: 104px; }
+      .competency-cloud .cloud-shape::before { width: 34px; height: 28px; top: -12px; }
+      .competency-cloud .cloud-shape::after { width: 40px; height: 32px; top: -14px; }
+      .competency-cloud.k1 { left: 1%; top: 8%; }
+      .competency-cloud.k2 { left: 4%; top: 62%; }
+      .competency-cloud.k3 { right: 1%; top: 9%; }
+      .competency-cloud.k4 { right: 2%; top: 62%; }
+      .competency-cloud.k5 { top: 1%; }
+      .competency-cloud.k6 { bottom: 2%; }
+      .competency-cloud.k7 { left: 0%; top: 35%; }
+      .competency-cloud.k8 { right: 0%; top: 36%; }
+      .action-cloud { min-height: 164px; padding: 34px 18px 22px; }
+      .action-cloud::before { width: 95px; height: 74px; left: 18px; top: -24px; }
+      .action-cloud::after { width: 105px; height: 80px; right: 16px; top: -28px; }
       .circle-btn { width: 118px; height: 118px; }
       .circle-btn .label { font-size: 28px; }
       .circle-btn.selected { width: 148px; height: 148px; }
@@ -559,25 +730,60 @@
       <!-- 첫 화면 -->
       <section class="screen active" id="homeScreen">
         <div class="hero">
-          <div class="cloud one"></div>
-          <div class="cloud two"></div>
-          <div class="cloud three"></div>
-          <div class="cloud four"></div>
+          <div class="sky-cloud one"><svg viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg"><g fill="#ffffff"><ellipse cx="74" cy="70" rx="46" ry="28"/><ellipse cx="117" cy="54" rx="41" ry="34"/><ellipse cx="160" cy="68" rx="43" ry="27"/><ellipse cx="118" cy="78" rx="92" ry="28"/></g></svg></div>
+          <div class="sky-cloud two"><svg viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg"><g fill="#ffffff"><ellipse cx="70" cy="68" rx="38" ry="24"/><ellipse cx="108" cy="52" rx="36" ry="28"/><ellipse cx="146" cy="66" rx="34" ry="24"/><ellipse cx="109" cy="75" rx="78" ry="23"/></g></svg></div>
+          <div class="sky-cloud three"><svg viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg"><g fill="#ffffff"><ellipse cx="74" cy="74" rx="46" ry="28"/><ellipse cx="122" cy="53" rx="45" ry="36"/><ellipse cx="171" cy="74" rx="44" ry="28"/><ellipse cx="128" cy="83" rx="100" ry="28"/></g></svg></div>
+          <div class="sky-cloud four"><svg viewBox="0 0 220 110" xmlns="http://www.w3.org/2000/svg"><g fill="#ffffff"><ellipse cx="63" cy="62" rx="34" ry="21"/><ellipse cx="96" cy="48" rx="31" ry="24"/><ellipse cx="130" cy="60" rx="34" ry="21"/><ellipse cx="98" cy="69" rx="72" ry="22"/></g></svg></div>
+          <div class="sky-cloud five"><svg viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg"><g fill="#ffffff"><ellipse cx="70" cy="67" rx="42" ry="24"/><ellipse cx="113" cy="49" rx="40" ry="30"/><ellipse cx="156" cy="66" rx="38" ry="24"/><ellipse cx="113" cy="76" rx="82" ry="24"/></g></svg></div>
 
-          <div class="floating-keyword kw1">창의적 사고 역량</div>
-          <div class="floating-keyword kw2">생활 자립 역량</div>
-          <div class="floating-keyword kw3">실천적 문제 해결 역량</div>
-          <div class="floating-keyword kw4">의사소통 역량</div>
-          <div class="floating-keyword kw5">2022 개정 기술·가정과 핵심역량</div>
-          <div class="floating-keyword kw6">기술 시스템 설계 역량 · 공동체 역량</div>
-          <div class="floating-keyword kw7">관계 형성 역량</div>
-          <div class="floating-keyword kw8">협력적 소통 역량</div>
+          <div class="hero-content">
+            <div class="title-cloud">
+              <span class="puff-a"></span>
+              <span class="puff-b"></span>
+              <h1>기술가정 수업하기</h1>
+              <p>기술과 가정을 쉽고 재미있게 배우는 수업 공간입니다.</p>
+              <button type="button" class="btn" id="startButton">시작</button>
+            </div>
 
-          <div class="hero-inner">
-            <div class="hero-badge">☁️ 배움이 떠다니는 첫 화면</div>
-            <h1>기술가정 수업하기</h1>
-            <p>구름처럼 둥둥 떠다니는 핵심역량과 함께 기술과 가정을 쉽고 재미있게 배우는 수업 공간입니다.</p>
-            <button type="button" class="btn" id="startButton">시작</button>
+            <div class="cloud-field" id="cloudField">
+              <button type="button" class="competency-cloud k1" data-title="창의적 사고 역량" data-icon="💡" data-desc="새로운 아이디어를 떠올리고 다양한 해결 방법을 생각하는 힘이에요.">
+                <span class="cloud-shape">창의적 사고 역량</span>
+              </button>
+              <button type="button" class="competency-cloud k2" data-title="생활 자립 역량" data-icon="🌱" data-desc="일상생활을 스스로 계획하고 건강하게 실천하는 힘이에요.">
+                <span class="cloud-shape">생활 자립 역량</span>
+              </button>
+              <button type="button" class="competency-cloud k3" data-title="실천적 문제 해결 역량" data-icon="🛠️" data-desc="생활 속 문제를 발견하고 실제로 해결해 보는 실천의 힘이에요.">
+                <span class="cloud-shape">실천적 문제 해결 역량</span>
+              </button>
+              <button type="button" class="competency-cloud k4" data-title="의사소통 역량" data-icon="💬" data-desc="생각을 나누고 상대를 이해하며 함께 소통하는 힘이에요.">
+                <span class="cloud-shape">의사소통 역량</span>
+              </button>
+              <button type="button" class="competency-cloud k5" data-title="2022 개정 기술·가정과 핵심역량" data-icon="☁️" data-desc="기술과 가정 교과는 삶과 기술을 연결하며 핵심역량을 기르도록 돕습니다.">
+                <span class="cloud-shape">2022 개정 기술·가정과 핵심역량</span>
+              </button>
+              <button type="button" class="competency-cloud k6" data-title="기술 시스템 설계 역량 · 공동체 역량" data-icon="⚙️" data-desc="기술을 설계하고 공동체와 더불어 살아가는 실천 역량을 뜻해요.">
+                <span class="cloud-shape">기술 시스템 설계 역량 · 공동체 역량</span>
+              </button>
+              <button type="button" class="competency-cloud k7" data-title="관계 형성 역량" data-icon="🤝" data-desc="나와 가족, 이웃의 관계를 이해하고 따뜻하게 연결하는 힘이에요.">
+                <span class="cloud-shape">관계 형성 역량</span>
+              </button>
+              <button type="button" class="competency-cloud k8" data-title="협력적 소통 역량" data-icon="🌈" data-desc="서로 협력하며 의견을 조율하고 함께 결과를 만들어 가는 힘이에요.">
+                <span class="cloud-shape">협력적 소통 역량</span>
+              </button>
+            </div>
+
+            <div class="competency-display">
+              <div class="action-cloud" id="actionCloud">
+                <span class="puff1"></span>
+                <span class="puff2"></span>
+                <span class="orbit-sparkle s1"></span>
+                <span class="orbit-sparkle s2"></span>
+                <span class="orbit-sparkle s3"></span>
+                <div class="action-icon" id="actionIcon">☁️</div>
+                <div class="action-title" id="actionTitle">핵심역량 구름</div>
+                <p class="action-desc" id="actionDesc">구름을 클릭하면 움직이는 액션 그래픽처럼 핵심역량 설명이 나타납니다.</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -678,8 +884,37 @@
     const resetOrbitBtn = document.getElementById('resetOrbitBtn');
     const ringEls = [document.getElementById('ring1'), document.getElementById('ring2'), document.getElementById('ring3')];
 
+    const competencyButtons = document.querySelectorAll('.competency-cloud');
+    const actionCloud = document.getElementById('actionCloud');
+    const actionIcon = document.getElementById('actionIcon');
+    const actionTitle = document.getElementById('actionTitle');
+    const actionDesc = document.getElementById('actionDesc');
+
     let currentMode = null;
-    let activeTopic = null;
+
+    function showCompetencyAction(button) {
+      competencyButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      actionIcon.textContent = button.dataset.icon || '☁️';
+      actionTitle.textContent = button.dataset.title || '';
+      actionDesc.textContent = button.dataset.desc || '';
+      actionCloud.classList.remove('show');
+      void actionCloud.offsetWidth;
+      actionCloud.classList.add('show');
+    }
+
+    competencyButtons.forEach((button, index) => {
+      button.addEventListener('click', () => showCompetencyAction(button));
+      if (index === 4) {
+        window.addEventListener('load', () => setTimeout(() => showCompetencyAction(button), 250));
+      }
+    });
+
+    function showScreen(name) {
+      Object.values(screens).forEach(screen => screen.classList.remove('active'));
+      screens[name].classList.add('active');
+      window.scrollTo(0, 0);
+    }
 
     function showArt(item) {
       artBox.innerHTML = `
@@ -700,13 +935,11 @@
       homeMainBtn.classList.remove('selected','dim');
       centerDuo.style.transform = 'scale(1)';
       currentMode = null;
-      activeTopic = null;
       artBox.innerHTML = '<div class="placeholder">가운데에서 과목을 먼저 선택해보세요.<br>주제를 누르면 더 역동적으로 움직이는 그림이 나타납니다.</div>';
     }
 
     function activateMode(mode) {
       currentMode = mode;
-      activeTopic = null;
       const selectedBtn = mode === 'tech' ? techMainBtn : homeMainBtn;
       const otherBtn = mode === 'tech' ? homeMainBtn : techMainBtn;
 
@@ -717,13 +950,13 @@
 
       orbitTopics.innerHTML = '';
       const items = topics[mode].items;
-      const mobile = window.innerWidth <= 680;
+      const mobile = window.innerWidth <= 760;
       const baseRadius = mobile ? 122 : 170;
       const extraRadius = mobile ? 42 : 55;
       const total = items.length;
 
       ringEls.forEach((r, idx) => {
-        r.classList.toggle('visible', idx < Math.ceil(total/3));
+        r.classList.toggle('visible', idx < Math.ceil(total / 3));
       });
 
       items.forEach((item, index) => {
@@ -733,14 +966,11 @@
         const radius = total <= 6 ? baseRadius : (index % 2 === 0 ? baseRadius : baseRadius + extraRadius);
         const x = Math.cos(angle) * radius;
         const y = Math.sin(angle) * radius;
-        wrap.dataset.x = x.toFixed(1);
-        wrap.dataset.y = y.toFixed(1);
-        wrap.innerHTML = `<button type="button" class="topic-btn"><span>${item.text}</span><span class="mini">주제</span></button>`;
+        wrap.innerHTML = `<button type="button" class="topic-btn"><span>${item.text}</span></button>`;
         const btn = wrap.querySelector('button');
         btn.addEventListener('click', () => {
           document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
-          activeTopic = item.text;
           showArt(item);
         });
         orbitTopics.appendChild(wrap);
