@@ -17,6 +17,7 @@
       --soft: #eef5ff;
       --soft-border: #d9e6f5;
       --accent: #ffbd42;
+      --shadow: 0 14px 40px rgba(25, 65, 105, 0.12);
     }
     body {
       margin: 0;
@@ -25,6 +26,7 @@
       font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
       background: linear-gradient(135deg, var(--bg1), var(--bg2));
       color: var(--text);
+      overflow-x: hidden;
     }
     .app {
       min-height: 100vh;
@@ -36,189 +38,418 @@
     }
     .panel {
       width: 100%;
-      max-width: 980px;
+      max-width: 1180px;
       padding: 24px;
-      border-radius: 24px;
-      background: var(--card);
-      box-shadow: 0 14px 40px rgba(25, 65, 105, 0.12);
+      border-radius: 28px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(4px);
+      box-shadow: var(--shadow);
     }
     .screen { display: none; }
     .screen.active { display: block; }
 
+    /* 첫 화면 */
     .hero {
-      max-width: 480px;
+      position: relative;
+      min-height: 690px;
+      overflow: hidden;
+      border-radius: 26px;
+      background: linear-gradient(180deg, #eaf5ff 0%, #f8fcff 55%, #effcf4 100%);
+      border: 1px solid #dcebf8;
+      padding: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero-inner {
+      position: relative;
+      z-index: 5;
+      max-width: 560px;
+      width: 100%;
       margin: 0 auto;
-      padding: 24px 8px;
+      padding: 38px 24px 28px;
+      border-radius: 28px;
+      background: rgba(255,255,255,0.78);
+      box-shadow: 0 16px 38px rgba(71, 116, 164, 0.12);
+      backdrop-filter: blur(3px);
       text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #356089;
+      border: 1px solid #d8e8f8;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 20px rgba(53, 96, 137, 0.08);
     }
     h1 {
-      margin: 0 0 16px;
-      font-size: clamp(28px, 7vw, 38px);
-      line-height: 1.3;
+      margin: 0 0 14px;
+      font-size: clamp(30px, 7vw, 46px);
+      line-height: 1.22;
       word-break: keep-all;
-    }
-    h2 {
-      margin: 0 0 10px;
-      font-size: clamp(24px, 5vw, 34px);
-      line-height: 1.3;
-      word-break: keep-all;
-      text-align: center;
+      letter-spacing: -0.04em;
     }
     p {
-      margin: 0 0 28px;
-      font-size: clamp(15px, 4vw, 18px);
+      margin: 0 0 24px;
+      font-size: clamp(15px, 3.8vw, 18px);
       line-height: 1.7;
       color: var(--sub);
       word-break: keep-all;
       text-align: center;
     }
-    .btn,
-    .grid-btn {
-      border: 0;
-      border-radius: 16px;
-      font: inherit;
-      cursor: pointer;
-      transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+
+    .cloud {
+      position: absolute;
+      z-index: 1;
+      background: rgba(255,255,255,0.95);
+      border: 1px solid rgba(220,235,248,0.95);
+      box-shadow: 0 10px 26px rgba(100, 141, 185, 0.12);
+      border-radius: 999px;
+      animation: cloudFloat linear infinite;
+      will-change: transform;
     }
-    .btn:active,
-    .grid-btn:active { transform: scale(0.98); }
+    .cloud::before,
+    .cloud::after {
+      content: "";
+      position: absolute;
+      background: inherit;
+      border: inherit;
+      border-radius: 999px;
+    }
+    .cloud::before { width: 42%; height: 70%; left: 11%; top: -32%; }
+    .cloud::after { width: 35%; height: 60%; right: 12%; top: -22%; }
+    .cloud.one { width: 150px; height: 52px; left: -20%; top: 16%; animation-duration: 28s; animation-delay: -4s; }
+    .cloud.two { width: 118px; height: 42px; left: -18%; top: 38%; animation-duration: 34s; animation-delay: -12s; }
+    .cloud.three { width: 175px; height: 60px; left: -25%; top: 70%; animation-duration: 30s; animation-delay: -8s; }
+    .cloud.four { width: 132px; height: 46px; left: -22%; top: 56%; animation-duration: 39s; animation-delay: -17s; }
+
+    .floating-keyword {
+      position: absolute;
+      z-index: 2;
+      padding: 10px 16px;
+      background: rgba(255,255,255,0.92);
+      color: #38638a;
+      border-radius: 999px;
+      border: 1px solid #d7e8f8;
+      font-size: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 12px 26px rgba(95, 138, 183, 0.12);
+      animation: bob 5.6s ease-in-out infinite;
+    }
+    .kw1 { left: 8%; top: 12%; animation-delay: 0s; }
+    .kw2 { left: 14%; top: 58%; animation-delay: -1.4s; }
+    .kw3 { right: 8%; top: 14%; animation-delay: -0.8s; }
+    .kw4 { right: 11%; top: 61%; animation-delay: -2.2s; }
+    .kw5 { left: 50%; transform: translateX(-50%); top: 8%; animation-delay: -1.8s; }
+    .kw6 { left: 50%; transform: translateX(-50%); bottom: 10%; animation-delay: -3s; }
+    .kw7 { left: 5%; top: 31%; animation-delay: -2.6s; }
+    .kw8 { right: 5%; top: 38%; animation-delay: -3.8s; }
+
+    .btn,
+    .circle-btn,
+    .topic-btn,
+    .small-btn {
+      border: 0;
+      cursor: pointer;
+      font: inherit;
+      transition: transform 0.18s ease, box-shadow 0.22s ease, background 0.22s ease, filter 0.22s ease;
+    }
     .btn:focus-visible,
-    .grid-btn:focus-visible {
+    .circle-btn:focus-visible,
+    .topic-btn:focus-visible,
+    .small-btn:focus-visible {
       outline: 3px solid var(--accent);
       outline-offset: 4px;
     }
+    .btn:active,
+    .circle-btn:active,
+    .topic-btn:active,
+    .small-btn:active { transform: scale(0.97); }
+
     .btn {
+      position: relative;
+      overflow: hidden;
       width: 100%;
       max-width: 280px;
-      min-height: 56px;
-      padding: 14px 20px;
-      background: var(--primary);
+      min-height: 60px;
+      padding: 16px 24px;
+      border-radius: 18px;
+      background: linear-gradient(120deg, #2479d8, #6f7bff, #22b5de);
+      background-size: 220% 220%;
       color: #fff;
       font-size: 20px;
-      font-weight: 700;
+      font-weight: 800;
       display: block;
       margin: 0 auto;
+      box-shadow: 0 14px 26px rgba(36, 121, 216, 0.22);
+      animation: gradientFlow 6s ease infinite;
     }
-    .btn:hover { background: var(--primary-dark); }
-    .btn.secondary {
-      background: var(--soft);
-      color: var(--primary-dark);
+    .btn::after,
+    .circle-btn::after,
+    .topic-btn::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      transform: translateX(-135%) skewX(-25deg);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent);
+      transition: transform 0.7s ease;
+      pointer-events: none;
     }
-    .btn.secondary:hover { background: #dfeeff; }
+    .btn:hover,
+    .circle-btn:hover,
+    .topic-btn:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 18px 30px rgba(36, 121, 216, 0.2);
+    }
+    .btn:hover::after,
+    .circle-btn:hover::after,
+    .topic-btn:hover::after { transform: translateX(135%) skewX(-25deg); }
 
-    .subject-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-      max-width: 560px;
-      margin: 24px auto 12px;
+    /* 두 번째 화면 */
+    .selection-wrap {
+      border-radius: 24px;
+      background: linear-gradient(180deg, #f8fbff, #f2fbf6);
+      border: 1px solid #e2ecf5;
+      padding: 26px 18px 24px;
+      min-height: 760px;
     }
-    .subject-card {
-      min-height: 140px;
-      padding: 18px;
-      border: 1px solid var(--soft-border);
-      border-radius: 20px;
-      background: linear-gradient(180deg, #f9fcff, #f0f7ff);
-      color: var(--text);
+    .page-title {
+      margin: 0 0 10px;
+      font-size: clamp(24px, 5vw, 34px);
       text-align: center;
-      font-size: clamp(34px, 6vw, 42px);
-      font-weight: 800;
-      box-shadow: 0 8px 20px rgba(36, 121, 216, 0.08);
+      line-height: 1.3;
+      letter-spacing: -0.03em;
     }
-    .subject-card small {
-      display: block;
-      margin-top: 10px;
-      font-size: 14px;
-      line-height: 1.5;
+    .page-subtitle {
+      margin: 0 0 18px;
+      text-align: center;
       color: var(--sub);
-      font-weight: 500;
+      font-size: 16px;
+      line-height: 1.7;
     }
-    .subject-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(36, 121, 216, 0.14);
+    .selection-area {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    .orbital-panel,
+    .art-panel {
+      border: 1px solid #dceaf7;
+      background: rgba(255,255,255,0.82);
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: 0 8px 22px rgba(69, 112, 156, 0.08);
+    }
+    .orbital-board {
+      position: relative;
+      height: 560px;
+      border-radius: 20px;
+      background: radial-gradient(circle at 50% 45%, #f6fbff 0%, #eef8ff 46%, #edf9f2 100%);
+      border: 1px dashed #cfe2f2;
+      overflow: hidden;
+    }
+    .ring {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      border: 1px dashed rgba(103, 146, 187, 0.22);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .ring.visible { opacity: 1; }
+    .ring.r1 { width: 250px; height: 250px; }
+    .ring.r2 { width: 350px; height: 350px; }
+    .ring.r3 { width: 455px; height: 455px; }
+
+    .center-stage {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 220px;
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 4;
+    }
+    .center-duo {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.45s ease;
+    }
+    .circle-btn {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 136px;
+      height: 136px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #ffffff, #eef7ff);
+      border: 1px solid #d9e8f7;
+      box-shadow: 0 12px 24px rgba(89, 130, 173, 0.12);
+      color: var(--text);
+    }
+    .circle-btn .emoji {
+      font-size: 34px;
+      line-height: 1;
+      margin-bottom: 10px;
+      animation: floatIcon 2.6s ease-in-out infinite;
+    }
+    .circle-btn .label {
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+    .circle-btn.small {
+      width: 118px;
+      height: 118px;
+    }
+    .circle-btn.selected {
+      width: 170px;
+      height: 170px;
+      background: linear-gradient(145deg, #2479d8, #5d8dff);
+      color: #fff;
+      box-shadow: 0 18px 34px rgba(36, 121, 216, 0.28);
+      transform: scale(1.07);
+    }
+    .circle-btn.selected .label { font-size: clamp(32px, 4.5vw, 46px); }
+    .circle-btn.dim {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.7);
+    }
+    .back-switch {
+      position: absolute;
+      left: 16px;
+      top: 16px;
+      z-index: 8;
+      display: none;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #35506a;
+      border: 1px solid #d8e8f6;
+      box-shadow: 0 8px 20px rgba(73, 116, 159, 0.12);
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .back-switch.show { display: inline-flex; align-items: center; gap: 6px; }
+
+    .orbit-topic {
+      position: absolute;
+      left: 50%; top: 50%;
+      width: 92px; height: 92px;
+      margin-left: -46px; margin-top: -46px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(0,0) scale(0.4);
+      transition: transform 0.55s cubic-bezier(.2,.7,.2,1.15), opacity 0.35s ease;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .topic-btn {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #ffffff, #f2f9ff);
+      border: 1px solid #d8e8f7;
+      box-shadow: 0 12px 24px rgba(78, 119, 163, 0.12);
+      color: #214b73;
+      font-weight: 800;
+      font-size: 16px;
+      padding: 10px;
+      text-align: center;
+      line-height: 1.25;
+    }
+    .orbit-topic.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .topic-btn.active {
+      background: linear-gradient(145deg, #2479d8, #62a4ff);
+      color: #fff;
+      box-shadow: 0 16px 28px rgba(36, 121, 216, 0.23);
+    }
+    .topic-btn .mini {
+      display: block;
+      font-size: 13px;
+      opacity: 0.8;
+      margin-top: 4px;
     }
 
-    .category-layout {
-      display: grid;
-      grid-template-columns: 1.15fr 1fr;
-      gap: 22px;
-      align-items: start;
-    }
-    .category-panel,
-    .art-panel {
-      border: 1px solid var(--soft-border);
-      border-radius: 20px;
-      padding: 18px;
-      background: #fbfdff;
-    }
-    .section-title {
-      margin: 0 0 8px;
-      font-size: 22px;
-      line-height: 1.4;
-    }
-    .section-desc {
-      margin: 0 0 16px;
-      color: var(--sub);
-      font-size: 15px;
-      line-height: 1.6;
-      text-align: left;
-    }
-    .category-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-    .grid-btn {
-      min-height: 62px;
-      padding: 12px 10px;
-      background: #eef5ff;
-      color: #18456f;
-      font-size: 16px;
-      font-weight: 700;
-      border: 1px solid #d7e7fb;
-    }
-    .grid-btn:hover {
-      background: #dfeeff;
-      box-shadow: 0 6px 16px rgba(36, 121, 216, 0.12);
-    }
-    .grid-btn.active {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
-    }
+    .art-panel { display: flex; flex-direction: column; }
     .art-box {
-      min-height: 430px;
-      border-radius: 18px;
-      background: linear-gradient(180deg, #f6fbff, #edf6ff);
+      flex: 1;
+      min-height: 560px;
+      border-radius: 20px;
+      background: linear-gradient(180deg, #f7fbff, #edf6ff);
       padding: 18px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
+      overflow: hidden;
     }
     .art-box h3 {
       margin: 0 0 8px;
-      font-size: 24px;
+      font-size: 28px;
+      line-height: 1.25;
     }
     .art-box p {
-      margin: 0 0 18px;
+      margin: 0 0 16px;
       font-size: 15px;
       color: var(--sub);
-      text-align: center;
     }
     .art {
       width: 100%;
-      max-width: 310px;
+      max-width: 330px;
       aspect-ratio: 1 / 1;
       display: flex;
       align-items: center;
       justify-content: center;
+      animation: heroArtFloat 3.8s ease-in-out infinite;
     }
     .art svg {
       width: 100%;
       height: 100%;
-      filter: drop-shadow(0 8px 16px rgba(23, 50, 77, 0.08));
+      overflow: visible;
+      filter: drop-shadow(0 12px 20px rgba(23, 50, 77, 0.10));
+    }
+    .art-enter { animation: popIn 0.55s ease both; }
+    .art-sway { animation: sway 4.5s ease-in-out infinite; transform-origin: center center; }
+    .art-spin { animation: spinSlow 7s linear infinite; transform-origin: center center; }
+    .art-bounce { animation: bounceSoft 2.8s ease-in-out infinite; transform-origin: center center; }
+    .art-blink { animation: blinkSoft 2.2s ease-in-out infinite; }
+
+    .caption-chip {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #35506a;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid #dbe8f5;
     }
     .placeholder {
       color: var(--sub);
@@ -233,311 +464,165 @@
       flex-wrap: wrap;
       margin-top: 18px;
     }
-    .caption-chip {
-      display: inline-block;
-      margin-top: 12px;
-      padding: 8px 14px;
+    .small-btn {
+      padding: 12px 18px;
       border-radius: 999px;
       background: #ffffff;
-      color: #35506a;
-      font-size: 13px;
-      font-weight: 700;
-      border: 1px solid #dbe8f5;
+      color: #36526d;
+      border: 1px solid #d7e6f4;
+      box-shadow: 0 8px 18px rgba(65, 104, 145, 0.08);
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .small-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 18px rgba(65,104,145,0.12); }
+
+    @keyframes cloudFloat {
+      0% { transform: translateX(0) translateY(0); }
+      50% { transform: translateX(60vw) translateY(-8px); }
+      100% { transform: translateX(130vw) translateY(0); }
+    }
+    @keyframes bob {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+    .kw5, .kw6 { animation-name: bobCenter; }
+    @keyframes bobCenter {
+      0%,100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-12px); }
+    }
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes floatIcon {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    @keyframes heroArtFloat {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.82); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    @keyframes sway {
+      0%,100% { transform: rotate(-2deg); }
+      50% { transform: rotate(2deg); }
+    }
+    @keyframes spinSlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes bounceSoft {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-7px); }
+    }
+    @keyframes blinkSoft {
+      0%,45%,100% { opacity: 1; }
+      50% { opacity: 0.35; }
+      55% { opacity: 1; }
     }
 
-
-    /* 그래픽 모션 버튼: 움직이는 배경, 떠오름, 클릭 반응 */
-    .btn, .grid-btn {
-      position: relative;
-      overflow: hidden;
-      isolation: isolate;
-      -webkit-tap-highlight-color: transparent;
-      transition: transform .25s ease, box-shadow .25s ease, filter .25s ease;
+    @media (max-width: 980px) {
+      .selection-area { grid-template-columns: 1fr; }
+      .art-box { min-height: 380px; }
+      .orbital-board { height: 530px; }
     }
-    .btn::after, .grid-btn::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      pointer-events: none;
-      background: linear-gradient(110deg, transparent 15%, rgba(255,255,255,.48) 45%, transparent 70%);
-      transform: translateX(-155%);
-    }
-    .btn:hover::after, .grid-btn:hover::after {
-      animation: shine .7s ease-out 1;
-    }
-    .btn:hover, .grid-btn:hover { transform: translateY(-4px); }
-    .btn:active, .grid-btn:active { transform: translateY(1px) scale(.96); }
-    .btn:not(.secondary) {
-      background: linear-gradient(125deg, #2479d8, #6555d9, #2479d8);
-      background-size: 230% 230%;
-      animation: colorFlow 6s ease-in-out infinite;
-      box-shadow: 0 8px 20px rgba(36,121,216,.28);
-    }
-    .btn:not(.secondary):hover { box-shadow: 0 14px 28px rgba(36,121,216,.36); }
-    .subject-card.grid-btn {
-      padding: 22px 14px;
-      border: 2px solid #dbe9ff;
-      background: linear-gradient(140deg, #edf8ff, #eeeaff, #f0fff8);
-      background-size: 230% 230%;
-      animation: colorFlow 8s ease-in-out infinite;
-      box-shadow: 0 8px 24px rgba(46,91,160,.12);
-    }
-    .subject-card.grid-btn::before {
-      display: block;
-      margin: 0 auto 8px;
-      font-size: 40px;
-      line-height: 1.2;
-      animation: iconFloat 2.8s ease-in-out infinite;
-    }
-    #techButton::before { content: "⚙️"; }
-    #homeEcButton::before { content: "🏡"; animation-delay: -.8s; }
-    .subject-card.grid-btn:hover { box-shadow: 0 14px 30px rgba(46,91,160,.22); }
-    .subject-card.grid-btn.active { color: var(--text); }
-    #categoryGrid .grid-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      min-height: 98px;
-      background: linear-gradient(140deg,#f5f9ff,#e8efff);
-      box-shadow: 0 5px 14px rgba(36,121,216,.1);
-    }
-    #categoryGrid .grid-btn:nth-child(3n+2) { background: linear-gradient(140deg,#f3fff8,#e8f6ec); }
-    #categoryGrid .grid-btn:nth-child(3n) { background: linear-gradient(140deg,#fff9ef,#ffeedc); }
-    #categoryGrid .grid-btn.active {
-      background: linear-gradient(120deg, #2479d8, #6555d9);
-      color: #fff;
-      box-shadow: 0 10px 24px rgba(56,93,205,.27);
-    }
-    .topic-icon { font-size: 28px; line-height: 1.25; display: inline-block; animation: iconFloat 3.2s ease-in-out infinite; }
-    #categoryGrid .grid-btn:nth-child(even) .topic-icon { animation-delay: -1.3s; }
-    #categoryGrid .grid-btn:hover .topic-icon { animation: iconPop .42s ease-in-out; }
-    @keyframes iconFloat { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-5px) rotate(3deg); } }
-    @keyframes iconPop { 0%,100% { transform: scale(1); } 45% { transform: scale(1.23) rotate(8deg); } }
-    @keyframes colorFlow { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
-    @keyframes shine { from { transform: translateX(-155%); } to { transform: translateX(155%); } }
-    @media (prefers-reduced-motion: reduce) {
-      .btn, .grid-btn, .subject-card.grid-btn, .subject-card.grid-btn::before, .topic-icon { animation: none !important; transition: none !important; }
-      .btn:hover::after, .grid-btn:hover::after { animation: none !important; }
-    }
-
-    @media (max-width: 860px) {
-      .category-layout {
-        grid-template-columns: 1fr;
-      }
-      .art-box { min-height: 360px; }
-    }
-    @media (max-width: 560px) {
-      .panel { padding: 18px; border-radius: 20px; }
-      .subject-grid,
-      .category-grid { grid-template-columns: 1fr; }
-      .subject-card { min-height: 120px; }
-      .art-box { min-height: 320px; }
-      .art { max-width: 240px; }
-    }
-
-    /* 원형 과목 메뉴: 선택한 과목을 중앙으로 확대하고 주제를 둘러 배치 */
-    .orbit-scene {
-      position: relative;
-      width: min(100%, 540px);
-      height: 510px;
-      margin: 8px auto 0;
-      isolation: isolate;
-    }
-    .orbit-scene::before {
-      content: "";
-      position: absolute;
-      width: 340px;
-      height: 340px;
-      border: 2px dashed #d1e3fa;
-      border-radius: 50%;
-      left: 50%; top: 50%;
-      transform: translate(-50%, -50%);
-      opacity: 0;
-      transition: opacity .4s;
-      pointer-events: none;
-    }
-    .orbit-scene.expanded::before { opacity: 1; }
-    .orbit-scene .subject-grid {
-      position: absolute;
-      inset: 0;
-      display: block;
-      max-width: none;
-      margin: 0;
-      pointer-events: none;
-    }
-    .orbit-scene .subject-card.grid-btn {
-      pointer-events: auto;
-      position: absolute;
-      top: 50%;
-      width: 150px;
-      height: 150px;
-      min-height: 0;
-      border-radius: 50%;
-      padding: 15px;
-      font-size: 39px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      transform: translate(-50%, -50%);
-      transition: left .55s cubic-bezier(.2,.85,.2,1), transform .55s cubic-bezier(.2,.85,.2,1), opacity .35s, box-shadow .3s;
-      z-index: 2;
-    }
-    .orbit-scene .subject-card.grid-btn::before {
-      display: block;
-      font-size: 39px;
-      line-height: 1;
-      margin: 0;
-    }
-    .orbit-scene:not(.expanded) #techButton { left: 29%; }
-    .orbit-scene:not(.expanded) #homeEcButton { left: 71%; }
-    .orbit-scene.expanded .subject-card.grid-btn.chosen {
-      left: 50%;
-      transform: translate(-50%, -50%) scale(1.13);
-      box-shadow: 0 15px 42px rgba(47,100,175,.25);
-      z-index: 3;
-    }
-    .orbit-scene.expanded .subject-card.grid-btn:not(.chosen) {
-      opacity: 0;
-      pointer-events: none;
-      transform: translate(-50%, -50%) scale(.5);
-    }
-    .topic-area[hidden] { display: none !important; }
-    .topic-area { margin: 0; }
-    .topic-area .category-grid {
-      position: absolute;
-      inset: 0;
-      display: block;
-      pointer-events: none;
-      margin: 0;
-    }
-    .orbit-scene #categoryGrid .grid-btn {
-      position: absolute;
-      top: 50%; left: 50%;
-      width: 102px;
-      height: 102px;
-      min-height: 0;
-      padding: 8px 5px;
-      border-radius: 50%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      font-size: 13px;
-      line-height: 1.25;
-      word-break: keep-all;
-      pointer-events: auto;
-      opacity: 0;
-      transform: translate(-50%,-50%) scale(.2);
-      animation: orbitOpen .6s cubic-bezier(.18,.9,.2,1.1) forwards;
-      animation-delay: calc(var(--order) * 65ms);
-      box-shadow: 0 6px 18px rgba(44,92,150,.10);
-    }
-    .orbit-scene #categoryGrid .grid-btn.active {
-      background: linear-gradient(145deg,#287ce2,#615bdc);
-      color: #fff;
-    }
-    .orbit-scene #categoryGrid .grid-btn .topic-icon { font-size: 27px; }
-    @keyframes orbitOpen {
-      0% { opacity: 0; transform: translate(-50%,-50%) scale(.2) rotate(-20deg); }
-      70% { opacity: 1; }
-      100% { opacity: 1; transform: translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(1) rotate(0deg); }
-    }
-    .orbit-scene .subject-card.grid-btn:focus-visible,
-    .orbit-scene #categoryGrid .grid-btn:focus-visible { z-index: 5; }
-    #changeSubject {
-      display: none;
-      margin: 0 auto 10px;
-      max-width: 180px;
-      min-height: 44px;
-      font-size: 15px;
-    }
-    .orbit-scene.expanded + #changeSubject { display: block; }
-    .topic-details[hidden] { display: none !important; }
-    .topic-details {
-      padding-top: 18px;
-      margin-top: 12px;
-      border-top: 1px solid #dbe8f5;
-    }
-    .topic-details .section-title,
-    .topic-details .section-desc { text-align: center; }
-    .topic-details .section-desc { margin-bottom: 16px; }
-    @media (max-width: 600px) {
-      .orbit-scene { height: 375px; }
-      .orbit-scene::before { width: 238px; height: 238px; }
-      .orbit-scene .subject-card.grid-btn { width: 116px; height: 116px; font-size: 30px; }
-      .orbit-scene .subject-card.grid-btn::before { font-size: 31px; }
-      .orbit-scene:not(.expanded) #techButton { left: 27%; }
-      .orbit-scene:not(.expanded) #homeEcButton { left: 73%; }
-      .orbit-scene #categoryGrid .grid-btn {
-        width: 78px; height: 78px; font-size: 11px; gap: 2px;
-      }
-      .orbit-scene #categoryGrid .grid-btn .topic-icon { font-size: 22px; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .orbit-scene #categoryGrid .grid-btn { animation-duration: 0.01ms !important; animation-delay: 0ms !important; }
-      .orbit-scene .subject-card.grid-btn { transition: none !important; }
-    }
-    .art-panel { max-width: 660px; margin: 0 auto; }
-    .art-box { min-height: 375px; }
-    /* 그림 전체 및 개별 도형이 서로 다른 리듬으로 움직이도록 설정 */
-    .art { animation: artAppear .65s cubic-bezier(.2,.85,.25,1) both, artHover 3.8s ease-in-out .65s infinite; }
-    .art svg > :not(rect):not(ellipse):not(svg) { transform-box: fill-box; transform-origin: center; }
-    .art svg > path:nth-child(3n+1), .art svg > circle:nth-child(3n+1) { animation: artWiggle 2.6s ease-in-out infinite alternate; }
-    .art svg > path:nth-child(3n+2), .art svg > circle:nth-child(3n+2) { animation: artPulse 3.4s ease-in-out infinite; }
-    .art svg > g { transform-box: fill-box; transform-origin: center; animation: artRotate 9s ease-in-out infinite; }
-    .art-box h3 { animation: reveal .38s both; }
-    @keyframes reveal { from { opacity: 0; transform: translateY(15px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    @keyframes artAppear { from { opacity:0; transform:translateY(22px) scale(.82) rotate(-5deg); } to { opacity:1; transform:translateY(0) scale(1) rotate(0deg); } }
-    @keyframes artHover { 0%,100% { transform:translateY(0) rotate(-1.5deg); } 50% { transform:translateY(-14px) rotate(2deg); } }
-    @keyframes artWiggle { from { transform: rotate(-3deg) translateY(0); } to { transform: rotate(3deg) translateY(-3px); } }
-    @keyframes artPulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.045); } }
-    @keyframes artRotate { 0%,100% { transform:rotate(-4deg); } 50% { transform:rotate(7deg); } }
-    @media (prefers-reduced-motion: reduce) {
-      .topic-area, .topic-area #categoryGrid .grid-btn, .art, .art svg > *, .art-box h3 { animation: none !important; }
+    @media (max-width: 680px) {
+      .hero { min-height: 720px; padding: 18px; }
+      .hero-inner { padding: 30px 18px 22px; }
+      .floating-keyword { font-size: 12px; padding: 8px 12px; }
+      .kw1 { left: 4%; top: 13%; }
+      .kw2 { left: 4%; top: 58%; }
+      .kw3 { right: 4%; top: 14%; }
+      .kw4 { right: 2%; top: 60%; }
+      .kw7 { left: 3%; top: 32%; }
+      .kw8 { right: 1%; top: 38%; }
+      .circle-btn { width: 118px; height: 118px; }
+      .circle-btn .label { font-size: 28px; }
+      .circle-btn.selected { width: 148px; height: 148px; }
+      .orbit-topic { width: 78px; height: 78px; margin-left: -39px; margin-top: -39px; }
+      .topic-btn { font-size: 13px; }
+      .topic-btn .mini { display: none; }
+      .orbital-board { height: 480px; }
+      .ring.r1 { width: 196px; height: 196px; }
+      .ring.r2 { width: 280px; height: 280px; }
+      .ring.r3 { width: 360px; height: 360px; }
     }
   </style>
 </head>
 <body>
   <div class="app">
     <div class="panel">
+      <!-- 첫 화면 -->
       <section class="screen active" id="homeScreen">
         <div class="hero">
-          <h1>기술가정 수업하기</h1>
-          <p>기술과 가정을 쉽고 재미있게 배우는 수업 공간입니다.</p>
-          <button type="button" class="btn" id="startButton">시작</button>
+          <div class="cloud one"></div>
+          <div class="cloud two"></div>
+          <div class="cloud three"></div>
+          <div class="cloud four"></div>
+
+          <div class="floating-keyword kw1">창의적 사고 역량</div>
+          <div class="floating-keyword kw2">생활 자립 역량</div>
+          <div class="floating-keyword kw3">실천적 문제 해결 역량</div>
+          <div class="floating-keyword kw4">의사소통 역량</div>
+          <div class="floating-keyword kw5">2022 개정 기술·가정과 핵심역량</div>
+          <div class="floating-keyword kw6">기술 시스템 설계 역량 · 공동체 역량</div>
+          <div class="floating-keyword kw7">관계 형성 역량</div>
+          <div class="floating-keyword kw8">협력적 소통 역량</div>
+
+          <div class="hero-inner">
+            <div class="hero-badge">☁️ 배움이 떠다니는 첫 화면</div>
+            <h1>기술가정 수업하기</h1>
+            <p>구름처럼 둥둥 떠다니는 핵심역량과 함께 기술과 가정을 쉽고 재미있게 배우는 수업 공간입니다.</p>
+            <button type="button" class="btn" id="startButton">시작</button>
+          </div>
         </div>
       </section>
 
-      <section class="screen" id="subjectScreen">
-        <h2>과목 선택</h2>
-        <p>기술 또는 가정을 눌러 주제를 살펴보세요.</p>
-        <div class="orbit-scene" id="orbitScene">
-          <div class="subject-grid">
-            <button type="button" class="subject-card grid-btn" id="techButton" aria-expanded="false" aria-controls="topicArea">기술</button>
-            <button type="button" class="subject-card grid-btn" id="homeEcButton" aria-expanded="false" aria-controls="topicArea">가정</button>
-          </div>
-          <div id="topicArea" class="topic-area" hidden>
-            <div class="category-grid" id="categoryGrid" aria-label="주제 선택"></div>
-          </div>
-        </div>
-        <button type="button" class="btn secondary" id="changeSubject">↔ 과목 바꾸기</button>
-        <div class="topic-details" id="topicDetails" hidden>
-          <h3 class="section-title" id="categoryTitle">주제 선택</h3>
-          <p class="section-desc" id="categoryDesc"></p>
-          <div class="art-panel" id="artPanel" aria-live="polite">
-            <div class="art-box" id="artBox">
-              <div class="placeholder">주변의 원형 주제 버튼을 선택해 주세요.</div>
+      <!-- 두번째 화면 -->
+      <section class="screen" id="selectionScreen">
+        <div class="selection-wrap">
+          <h2 class="page-title">과목 선택</h2>
+          <p class="page-subtitle">기술 또는 가정을 선택하면 가운데가 커지고, 주변으로 주제 버튼이 동그랗게 펼쳐집니다.</p>
+
+          <div class="selection-area">
+            <div class="orbital-panel">
+              <div class="orbital-board" id="orbitalBoard">
+                <button type="button" class="back-switch" id="resetOrbitBtn">↺ 과목 다시 선택</button>
+                <div class="ring r1" id="ring1"></div>
+                <div class="ring r2" id="ring2"></div>
+                <div class="ring r3" id="ring3"></div>
+
+                <div class="center-stage">
+                  <div class="center-duo" id="centerDuo">
+                    <button type="button" class="circle-btn" id="techMainBtn">
+                      <span class="emoji">⚙️</span>
+                      <span class="label">기술</span>
+                    </button>
+                    <button type="button" class="circle-btn" id="homeMainBtn">
+                      <span class="emoji">🏡</span>
+                      <span class="label">가정</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div id="orbitTopics"></div>
+              </div>
+
+              <div class="nav-row">
+                <button type="button" class="small-btn" id="backToHomeBtn">처음으로</button>
+              </div>
+            </div>
+
+            <div class="art-panel">
+              <div class="art-box" id="artBox">
+                <div class="placeholder">가운데에서 과목을 먼저 선택해보세요.<br>주제를 누르면 더 역동적으로 움직이는 그림이 나타납니다.</div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="nav-row">
-          <button type="button" class="btn secondary" id="backToHome">처음으로</button>
         </div>
       </section>
     </div>
@@ -546,9 +631,8 @@
   <script>
     const screens = {
       home: document.getElementById('homeScreen'),
-      subject: document.getElementById('subjectScreen')
+      select: document.getElementById('selectionScreen')
     };
-
     function showScreen(name) {
       Object.values(screens).forEach(screen => screen.classList.remove('active'));
       screens[name].classList.add('active');
@@ -557,359 +641,134 @@
 
     const topics = {
       home: {
-        title: '가정 주제 선택',
-        desc: '가정 영역의 세부 주제를 선택해보세요.',
+        title: '가정',
+        emoji: '🏡',
         items: [
-          {
-            key: '의',
-            text: '의',
-            info: '옷과 섬유, 의복 관리와 옷차림을 배우는 주제예요.',
-            artTitle: '옷 그림',
-            art: `
-              <svg viewBox="0 0 240 240" aria-label="옷 그림" xmlns="http://www.w3.org/2000/svg">
-                <rect width="240" height="240" rx="32" fill="#EAF5FF"/>
-                <ellipse cx="120" cy="204" rx="70" ry="10" fill="#D7E8F7"/>
-                <path d="M82 58L98 40H142L158 58L182 73L170 102L152 94V188H88V94L70 102L58 73L82 58Z" fill="#71B8FF" stroke="#1F5B8F" stroke-width="4" stroke-linejoin="round"/>
-                <path d="M98 40C102 53 110 60 120 60C130 60 138 53 142 40" fill="none" stroke="#1F5B8F" stroke-width="4" stroke-linecap="round"/>
-                <path d="M88 188H152" stroke="#1F5B8F" stroke-width="4" stroke-linecap="round"/>
-                <circle cx="120" cy="108" r="4" fill="#1F5B8F"/>
-                <circle cx="120" cy="124" r="4" fill="#1F5B8F"/>
-                <circle cx="120" cy="140" r="4" fill="#1F5B8F"/>
-                <path d="M87 95C97 104 107 108 120 108C133 108 143 104 153 95" fill="none" stroke="#A7D7FF" stroke-width="4" opacity="0.8"/>
-              </svg>`
-          },
-          {
-            key: '식',
-            text: '식',
-            info: '건강한 식생활과 음식 만들기, 영양을 배우는 주제예요.',
-            artTitle: '음식 그림',
-            art: `
-              <svg viewBox="0 0 240 240" aria-label="음식 그림" xmlns="http://www.w3.org/2000/svg">
-                <rect width="240" height="240" rx="32" fill="#FFF5EA"/>
-                <ellipse cx="120" cy="188" rx="76" ry="18" fill="#D8EAF5"/>
-                <ellipse cx="120" cy="135" rx="70" ry="24" fill="#C8DAE7"/>
-                <ellipse cx="120" cy="126" rx="72" ry="26" fill="#FFFFFF" stroke="#D96F3B" stroke-width="5"/>
-                <ellipse cx="120" cy="126" rx="50" ry="16" fill="#FFE7A9"/>
-                <circle cx="94" cy="110" r="11" fill="#FFB54B"/>
-                <circle cx="143" cy="115" r="10" fill="#67C86E"/>
-                <circle cx="125" cy="133" r="8" fill="#F57D58"/>
-                <path d="M86 141C100 132 140 132 154 141" fill="none" stroke="#D96F3B" stroke-width="5" stroke-linecap="round"/>
-                <path d="M179 76C187 85 191 96 191 107" fill="none" stroke="#91C65B" stroke-width="6" stroke-linecap="round"/>
-                <path d="M182 75C184 66 193 59 203 59" fill="none" stroke="#91C65B" stroke-width="6" stroke-linecap="round"/>
-              </svg>`
-          },
-          {
-            key: '주',
-            text: '주',
-            info: '쾌적하고 안전한 주생활, 집과 공간을 배우는 주제예요.',
-            artTitle: '집 그림',
-            art: `
-              <svg viewBox="0 0 240 240" aria-label="집 그림" xmlns="http://www.w3.org/2000/svg">
-                <rect width="240" height="240" rx="32" fill="#EEF8EC"/>
-                <path d="M42 174H198" stroke="#86B874" stroke-width="8" stroke-linecap="round"/>
-                <path d="M50 115L120 58L190 115" fill="none" stroke="#A45B35" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-                <rect x="66" y="108" width="108" height="78" rx="8" fill="#FFD89B" stroke="#A45B35" stroke-width="5"/>
-                <rect x="106" y="140" width="28" height="46" rx="4" fill="#A45B35"/>
-                <rect x="79" y="123" width="22" height="22" rx="4" fill="#BFE5FF" stroke="#A45B35" stroke-width="4"/>
-                <rect x="139" y="123" width="22" height="22" rx="4" fill="#BFE5FF" stroke="#A45B35" stroke-width="4"/>
-                <path d="M166 84V62H180V96" fill="none" stroke="#A45B35" stroke-width="6" stroke-linecap="round"/>
-                <circle cx="127" cy="164" r="3" fill="#FFD89B"/>
-              </svg>`
-          },
-          {
-            key: '가족',
-            text: '가족',
-            info: '가족 관계와 역할, 배려와 소통을 배우는 주제예요.',
-            artTitle: '가족 그림',
-            art: `
-              <svg viewBox="0 0 240 240" aria-label="가족 그림" xmlns="http://www.w3.org/2000/svg">
-                <rect width="240" height="240" rx="32" fill="#FFF0F6"/>
-                <ellipse cx="120" cy="199" rx="72" ry="10" fill="#ECDCE5"/>
-                <circle cx="78" cy="92" r="18" fill="#FFD8B1"/>
-                <circle cx="120" cy="80" r="20" fill="#FFD8B1"/>
-                <circle cx="163" cy="93" r="17" fill="#FFD8B1"/>
-                <circle cx="120" cy="122" r="14" fill="#FFD8B1"/>
-                <path d="M57 157C57 138 69 124 86 124C103 124 115 138 115 157V171H57V157Z" fill="#6CA8FF"/>
-                <path d="M95 147C95 123 108 106 128 106C148 106 161 123 161 147V171H95V147Z" fill="#FF9494"/>
-                <path d="M141 156C141 139 152 128 168 128C184 128 194 139 194 156V171H141V156Z" fill="#7BCB95"/>
-                <path d="M102 175C102 162 110 153 120 153C130 153 138 162 138 175V184H102V175Z" fill="#FFD764"/>
-                <path d="M71 90C74 84 82 82 86 87" fill="none" stroke="#6F513E" stroke-width="3" stroke-linecap="round"/>
-                <path d="M112 73C116 66 126 66 130 73" fill="none" stroke="#6F513E" stroke-width="3" stroke-linecap="round"/>
-                <path d="M157 89C160 84 167 84 170 89" fill="none" stroke="#6F513E" stroke-width="3" stroke-linecap="round"/>
-              </svg>`
-          },
-          {
-            key: '소비',
-            text: '소비',
-            info: '합리적인 소비생활과 용돈 관리, 구매 판단을 배우는 주제예요.',
-            artTitle: '소비 그림',
-            art: `
-              <svg viewBox="0 0 240 240" aria-label="소비 그림" xmlns="http://www.w3.org/2000/svg">
-                <rect width="240" height="240" rx="32" fill="#EEF8FF"/>
-                <ellipse cx="120" cy="196" rx="72" ry="10" fill="#DBEAF5"/>
-                <rect x="50" y="76" width="140" height="92" rx="12" fill="#7CD0A8" stroke="#22674E" stroke-width="5"/>
-                <circle cx="120" cy="122" r="24" fill="#FFF4B7" stroke="#22674E" stroke-width="5"/>
-                <path d="M120 108V136" stroke="#22674E" stroke-width="5" stroke-linecap="round"/>
-                <path d="M109 116C112 111 116 109 122 109C128 109 133 113 133 118C133 124 129 127 122 129C114 131 109 135 109 141C109 147 114 150 121 150C127 150 132 147 135 143" fill="none" stroke="#22674E" stroke-width="5" stroke-linecap="round"/>
-                <path d="M71 88C80 71 107 65 128 75" fill="none" stroke="#5EA2E8" stroke-width="6" stroke-linecap="round"/>
-                <circle cx="161" cy="155" r="23" fill="none" stroke="#E26D5C" stroke-width="6"/>
-                <path d="M177 171L192 186" stroke="#E26D5C" stroke-width="8" stroke-linecap="round"/>
-              </svg>`
-          },
-          {
-            key: '발달',
-            text: '발달',
-            info: '청소년기의 성장과 발달, 자아 이해를 배우는 주제예요.',
-            artTitle: '발달 그림',
-            art: `
-              <svg viewBox="0 0 240 240" aria-label="발달 그림" xmlns="http://www.w3.org/2000/svg">
-                <rect width="240" height="240" rx="32" fill="#F2F8E8"/>
-                <ellipse cx="120" cy="200" rx="70" ry="10" fill="#DFE8D2"/>
-                <path d="M120 183C120 155 135 140 154 129C170 120 180 108 180 90C180 62 156 42 120 42C84 42 60 62 60 90C60 108 70 120 86 129C105 140 120 155 120 183Z" fill="#91D16C" stroke="#497F33" stroke-width="5"/>
-                <path d="M120 183V99" stroke="#497F33" stroke-width="5" stroke-linecap="round"/>
-                <path d="M120 118C103 110 91 95 85 77" fill="none" stroke="#497F33" stroke-width="5" stroke-linecap="round"/>
-                <path d="M120 109C136 100 149 86 155 69" fill="none" stroke="#497F33" stroke-width="5" stroke-linecap="round"/>
-                <circle cx="120" cy="184" r="10" fill="#8E5F43"/>
-                <circle cx="92" cy="96" r="5" fill="#BDE3A0"/>
-                <circle cx="152" cy="97" r="5" fill="#BDE3A0"/>
-              </svg>`
-          }
+          { text: '의', info: '옷과 섬유, 의복 관리와 옷차림을 배우는 주제예요.', artTitle: '옷 그림', art: `<svg viewBox="0 0 240 240" aria-label="옷 그림" xmlns="http://www.w3.org/2000/svg"><rect width="240" height="240" rx="32" fill="#EAF5FF"/><ellipse cx="120" cy="204" rx="70" ry="10" fill="#D7E8F7"/><g class="art-sway"><path d="M82 58L98 40H142L158 58L182 73L170 102L152 94V188H88V94L70 102L58 73L82 58Z" fill="#71B8FF" stroke="#1F5B8F" stroke-width="4" stroke-linejoin="round"/><path d="M98 40C102 53 110 60 120 60C130 60 138 53 142 40" fill="none" stroke="#1F5B8F" stroke-width="4" stroke-linecap="round"/><path d="M88 188H152" stroke="#1F5B8F" stroke-width="4" stroke-linecap="round"/></g><g class="art-blink"><circle cx="120" cy="108" r="4" fill="#1F5B8F"/><circle cx="120" cy="124" r="4" fill="#1F5B8F"/><circle cx="120" cy="140" r="4" fill="#1F5B8F"/></g><path d="M87 95C97 104 107 108 120 108C133 108 143 104 153 95" fill="none" stroke="#A7D7FF" stroke-width="4" opacity="0.8"/></svg>`},
+          { text: '식', info: '건강한 식생활과 음식 만들기, 영양을 배우는 주제예요.', artTitle: '음식 그림', art: `<svg viewBox="0 0 240 240" aria-label="음식 그림" xmlns="http://www.w3.org/2000/svg"><rect width="240" height="240" rx="32" fill="#FFF5EA"/><ellipse cx="120" cy="188" rx="76" ry="18" fill="#D8EAF5"/><ellipse cx="120" cy="135" rx="70" ry="24" fill="#C8DAE7"/><g class="art-bounce"><ellipse cx="120" cy="126" rx="72" ry="26" fill="#FFFFFF" stroke="#D96F3B" stroke-width="5"/><ellipse cx="120" cy="126" rx="50" ry="16" fill="#FFE7A9"/></g><g class="art-sway"><circle cx="94" cy="110" r="11" fill="#FFB54B"/><circle cx="143" cy="115" r="10" fill="#67C86E"/><circle cx="125" cy="133" r="8" fill="#F57D58"/></g><path d="M86 141C100 132 140 132 154 141" fill="none" stroke="#D96F3B" stroke-width="5" stroke-linecap="round"/><g class="art-bounce"><path d="M179 76C187 85 191 96 191 107" fill="none" stroke="#91C65B" stroke-width="6" stroke-linecap="round"/><path d="M182 75C184 66 193 59 203 59" fill="none" stroke="#91C65B" stroke-width="6" stroke-linecap="round"/></g></svg>`},
+          { text: '주', info: '쾌적하고 안전한 주생활, 집과 공간을 배우는 주제예요.', artTitle: '집 그림', art: `<svg viewBox="0 0 240 240" aria-label="집 그림" xmlns="http://www.w3.org/2000/svg"><rect width="240" height="240" rx="32" fill="#EEF8EC"/><path d="M42 174H198" stroke="#86B874" stroke-width="8" stroke-linecap="round"/><g class="art-bounce"><path d="M50 115L120 58L190 115" fill="none" stroke="#A45B35" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><rect x="66" y="108" width="108" height="78" rx="8" fill="#FFD89B" stroke="#A45B35" stroke-width="5"/><rect x="106" y="140" width="28" height="46" rx="4" fill="#A45B35"/></g><g class="art-blink"><rect x="79" y="123" width="22" height="22" rx="4" fill="#BFE5FF" stroke="#A45B35" stroke-width="4"/><rect x="139" y="123" width="22" height="22" rx="4" fill="#BFE5FF" stroke="#A45B35" stroke-width="4"/></g><path d="M166 84V62H180V96" fill="none" stroke="#A45B35" stroke-width="6" stroke-linecap="round"/></svg>`},
+          { text: '가족', info: '가족 관계와 역할, 배려와 소통을 배우는 주제예요.', artTitle: '가족 그림', art: `<svg viewBox="0 0 240 240" aria-label="가족 그림" xmlns="http://www.w3.org/2000/svg"><rect width="240" height="240" rx="32" fill="#FFF0F6"/><ellipse cx="120" cy="199" rx="72" ry="10" fill="#ECDCE5"/><g class="art-bounce"><circle cx="78" cy="92" r="18" fill="#FFD8B1"/><circle cx="120" cy="80" r="20" fill="#FFD8B1"/><circle cx="163" cy="93" r="17" fill="#FFD8B1"/><circle cx="120" cy="122" r="14" fill="#FFD8B1"/></g><path d="M57 157C57 138 69 124 86 124C103 124 115 138 115 157V171H57V157Z" fill="#6CA8FF"/><path d="M95 147C95 123 108 106 128 106C148 106 161 123 161 147V171H95V147Z" fill="#FF9494"/><path d="M141 156C141 139 152 128 168 128C184 128 194 139 194 156V171H141V156Z" fill="#7BCB95"/><path d="M102 175C102 162 110 153 120 153C130 153 138 162 138 175V184H102V175Z" fill="#FFD764"/></svg>`},
+          { text: '소비', info: '합리적인 소비생활과 용돈 관리, 구매 판단을 배우는 주제예요.', artTitle: '소비 그림', art: `<svg viewBox="0 0 240 240" aria-label="소비 그림" xmlns="http://www.w3.org/2000/svg"><rect width="240" height="240" rx="32" fill="#EEF8FF"/><ellipse cx="120" cy="196" rx="72" ry="10" fill="#DBEAF5"/><g class="art-bounce"><rect x="50" y="76" width="140" height="92" rx="12" fill="#7CD0A8" stroke="#22674E" stroke-width="5"/><circle cx="120" cy="122" r="24" fill="#FFF4B7" stroke="#22674E" stroke-width="5"/></g><g class="art-blink"><path d="M120 108V136" stroke="#22674E" stroke-width="5" stroke-linecap="round"/><path d="M109 116C112 111 116 109 122 109C128 109 133 113 133 118C133 124 129 127 122 129C114 131 109 135 109 141C109 147 114 150 121 150C127 150 132 147 135 143" fill="none" stroke="#22674E" stroke-width="5" stroke-linecap="round"/></g><g class="art-sway"><circle cx="161" cy="155" r="23" fill="none" stroke="#E26D5C" stroke-width="6"/><path d="M177 171L192 186" stroke="#E26D5C" stroke-width="8" stroke-linecap="round"/></g></svg>`},
+          { text: '발달', info: '청소년기의 성장과 발달, 자아 이해를 배우는 주제예요.', artTitle: '발달 그림', art: `<svg viewBox="0 0 240 240" aria-label="발달 그림" xmlns="http://www.w3.org/2000/svg"><rect width="240" height="240" rx="32" fill="#F2F8E8"/><ellipse cx="120" cy="200" rx="70" ry="10" fill="#DFE8D2"/><g class="art-sway"><path d="M120 183C120 155 135 140 154 129C170 120 180 108 180 90C180 62 156 42 120 42C84 42 60 62 60 90C60 108 70 120 86 129C105 140 120 155 120 183Z" fill="#91D16C" stroke="#497F33" stroke-width="5"/></g><path d="M120 183V99" stroke="#497F33" stroke-width="5" stroke-linecap="round"/><g class="art-bounce"><path d="M120 118C103 110 91 95 85 77" fill="none" stroke="#497F33" stroke-width="5" stroke-linecap="round"/><path d="M120 109C136 100 149 86 155 69" fill="none" stroke="#497F33" stroke-width="5" stroke-linecap="round"/></g><circle cx="120" cy="184" r="10" fill="#8E5F43"/></svg>`}
         ]
       },
       tech: {
-        title: '기술 주제 선택',
-        desc: '기술 영역의 세부 주제를 선택해보세요.',
+        title: '기술',
+        emoji: '⚙️',
         items: [
-          {
-            key: '기술',
-            text: '기술',
-            info: '기술의 의미와 우리 생활 속 기술 활용을 배우는 주제예요.',
-            artTitle: '기술 그림',
-            art: `
-              <svg viewBox="0 0 240 240" aria-label="기술 그림" xmlns="http://www.w3.org/2000/svg">
-                <rect width="240" height="240" rx="32" fill="#EEF6FF"/>
-                <ellipse cx="120" cy="199" rx="72" ry="10" fill="#D9E8F7"/>
-                <circle cx="120" cy="120" r="34" fill="#8CC2FF" stroke="#245D94" stroke-width="5"/>
-                <g fill="#8CC2FF" stroke="#245D94" stroke-width="5">
-                  <rect x="113" y="45" width="14" height="30" rx="4"/>
-                  <rect x="113" y="165" width="14" height="30" rx="4"/>
-                  <rect x="165" y="113" width="30" height="14" rx="4"/>
-                  <rect x="45" y="113" width="30" height="14" rx="4"/>
-                  <rect x="151" y="66" width="14" height="28" rx="4" transform="rotate(45 158 80)"/>
-                  <rect x="75" y="146" width="14" height="28" rx="4" transform="rotate(45 82 160)"/>
-                  <rect x="146" y="151" width="28" height="14" rx="4" transform="rotate(45 160 158)"/>
-                  <rect x="66" y="75" width="28" height="14" rx="4" transform="rotate(45 80 82)"/>
-                </g>
-                <circle cx="120" cy="120" r="12" fill="#ffffff" stroke="#245D94" stroke-width="5"/>
-              </svg>`
-          },
-          {
-            key: '발명',
-            text: '발명',
-            info: '새로운 아이디어를 생각하고 문제를 해결하는 발명을 배우는 주제예요.',
-            artTitle: '발명 그림',
-            art: `
-              <svg viewBox="0 0 240 240" aria-label="발명 그림" xmlns="http://www.w3.org/2000/svg">
-                <rect width="240" height="240" rx="32" fill="#FFF7DF"/>
-                <ellipse cx="120" cy="198" rx="72" ry="10" fill="#EADFB3"/>
-                <path d="M120 55C90 55 67 78 67 109C67 130 78 144 91 156C97 162 101 169 102 176H138C139 169 143 162 149 156C162 144 173 130 173 109C173 78 150 55 120 55Z" fill="#FFD764" stroke="#A86A00" stroke-width="5"/>
-                <path d="M105 177H135" stroke="#5A6B7C" stroke-width="5" stroke-linecap="round"/>
-                <rect x="101" y="176" width="38" height="18" rx="6" fill="#B6C7D8" stroke="#5A6B7C" stroke-width="5"/>
-                <rect x="104" y="194" width="32" height="12" rx="5" fill="#8A99A8"/>
-                <path d="M92 43L84 27 M148 43L156 27 M176 74L193 67 M47 68L64 74" stroke="#F2B400" stroke-width="6" stroke-linecap="round"/>
-              </svg>`
-          },
-          {
-            key: '재료제작',
-            text: '재료제작',
-            info: '다양한 재료의 특성과 만들기 과정을 배우는 주제예요.',
-            artTitle: '재료제작 그림',
-            art: `
-              <svg viewBox="0 0 240 240" aria-label="재료제작 그림" xmlns="http://www.w3.org/2000/svg">
-                <rect width="240" height="240" rx="32" fill="#F3F7FA"/>
-                <ellipse cx="120" cy="197" rx="72" ry="10" fill="#DEE6EC"/>
-                <rect x="57" y="154" width="126" height="18" rx="7" fill="#B98A5C"/>
-                <rect x="76" y="121" width="57" height="33" rx="6" fill="#91B9D9" stroke="#335F82" stroke-width="5"/>
-                <path d="M157 65L176 84L122 138L104 138L104 119L157 65Z" fill="#FFD18E" stroke="#935D24" stroke-width="5"/>
-                <path d="M176 84L185 75L194 84L185 93Z" fill="#FF8F8F" stroke="#935D24" stroke-width="5"/>
-                <rect x="140" y="139" width="28" height="15" rx="4" fill="#6E4D33"/>
-              </svg>`
-          },
-          {
-            key: '친환경에너지',
-            text: '친환경에너지',
-            info: '태양광, 바람 등 환경을 생각하는 에너지를 배우는 주제예요.',
-            artTitle: '친환경에너지 그림',
-            art: `
-              <svg viewBox="0 0 240 240" aria-label="친환경에너지 그림" xmlns="http://www.w3.org/2000/svg">
-                <rect width="240" height="240" rx="32" fill="#EDF8EC"/>
-                <path d="M40 186H200" stroke="#7AB36B" stroke-width="8" stroke-linecap="round"/>
-                <circle cx="66" cy="63" r="23" fill="#FFD45A"/>
-                <rect x="46" y="146" width="82" height="42" rx="8" fill="#5B95D6" stroke="#295985" stroke-width="5"/>
-                <path d="M86 146V126" stroke="#7A8EA3" stroke-width="6"/>
-                <path d="M56 161H116M56 174H116M66 146V188M86 146V188M106 146V188" stroke="#CFE7FF" stroke-width="3"/>
-                <path d="M166 188V104" stroke="#7A8EA3" stroke-width="6" stroke-linecap="round"/>
-                <circle cx="166" cy="88" r="8" fill="#7A8EA3"/>
-                <path d="M166 54L180 88L166 82L152 88Z" fill="#BFE8FF" stroke="#2F6C93" stroke-width="4" stroke-linejoin="round"/>
-                <path d="M131 95L166 82L160 96L166 110Z" fill="#BFE8FF" stroke="#2F6C93" stroke-width="4" stroke-linejoin="round"/>
-                <path d="M201 95L166 82L172 96L166 110Z" fill="#BFE8FF" stroke="#2F6C93" stroke-width="4" stroke-linejoin="round"/>
-              </svg>`
-          },
-          {
-            key: '수송기술',
-            text: '수송기술',
-            info: '사람과 물건을 이동시키는 다양한 수송기술을 배우는 주제예요.',
-            artTitle: '수송기술 그림',
-            art: `
-              <svg viewBox="0 0 240 240" aria-label="수송기술 그림" xmlns="http://www.w3.org/2000/svg">
-                <rect width="240" height="240" rx="32" fill="#EEF6FF"/>
-                <path d="M42 177H198" stroke="#A9BACB" stroke-width="7" stroke-linecap="round"/>
-                <path d="M49 145L67 109C71 100 80 94 90 94H145C154 94 162 99 168 107L189 133V160H49V145Z" fill="#FF8E7B" stroke="#954133" stroke-width="5"/>
-                <rect x="82" y="107" width="34" height="23" rx="5" fill="#DDF1FF"/>
-                <rect x="121" y="107" width="31" height="23" rx="5" fill="#DDF1FF"/>
-                <circle cx="82" cy="161" r="17" fill="#313B45"/>
-                <circle cx="157" cy="161" r="17" fill="#313B45"/>
-                <circle cx="82" cy="161" r="7" fill="#C7D2DB"/>
-                <circle cx="157" cy="161" r="7" fill="#C7D2DB"/>
-                <circle cx="181" cy="144" r="4" fill="#FFE28A"/>
-              </svg>`
-          },
-          {
-            key: '건설기술',
-            text: '건설기술',
-            info: '건축물과 구조물, 안전한 건설 과정을 배우는 주제예요.',
-            artTitle: '건설기술 그림',
-            art: `
-              <svg viewBox="0 0 240 240" aria-label="건설기술 그림" xmlns="http://www.w3.org/2000/svg">
-                <rect width="240" height="240" rx="32" fill="#FFF6E8"/>
-                <path d="M40 190H200" stroke="#8E5F43" stroke-width="6" stroke-linecap="round"/>
-                <rect x="53" y="111" width="52" height="79" rx="4" fill="#9AD0FF" stroke="#3B6D94" stroke-width="5"/>
-                <rect x="106" y="84" width="45" height="106" rx="4" fill="#7AB9F0" stroke="#3B6D94" stroke-width="5"/>
-                <rect x="152" y="58" width="36" height="132" rx="4" fill="#5EA2E8" stroke="#3B6D94" stroke-width="5"/>
-                <path d="M39 61H109" stroke="#E0A82F" stroke-width="8" stroke-linecap="round"/>
-                <path d="M74 61V93" stroke="#E0A82F" stroke-width="8" stroke-linecap="round"/>
-                <path d="M74 93L114 109" stroke="#E0A82F" stroke-width="8" stroke-linecap="round"/>
-                <rect x="108" y="103" width="12" height="12" fill="#E0A82F"/>
-              </svg>`
-          },
-          {
-            key: '정보통신기술',
-            text: '정보통신기술',
-            info: '컴퓨터와 인터넷, 디지털 소통 기술을 배우는 주제예요.',
-            artTitle: '정보통신기술 그림',
-            art: `
-              <svg viewBox="0 0 240 240" aria-label="정보통신기술 그림" xmlns="http://www.w3.org/2000/svg">
-                <rect width="240" height="240" rx="32" fill="#EFF4FF"/>
-                <ellipse cx="120" cy="197" rx="72" ry="10" fill="#DEE5F4"/>
-                <rect x="49" y="62" width="142" height="92" rx="10" fill="#A6CAFF" stroke="#35689A" stroke-width="5"/>
-                <rect x="69" y="82" width="102" height="52" rx="6" fill="#EAF4FF"/>
-                <rect x="98" y="154" width="44" height="12" rx="4" fill="#6C7D8F"/>
-                <rect x="84" y="166" width="72" height="10" rx="4" fill="#9DB0C2"/>
-                <path d="M87 121C96 106 116 100 132 108C143 114 151 113 159 105" fill="none" stroke="#5A8BE0" stroke-width="5" stroke-linecap="round"/>
-                <path d="M78 186C90 169 107 160 120 160C133 160 150 169 162 186" fill="none" stroke="#4FC1A4" stroke-width="6" stroke-linecap="round"/>
-                <circle cx="120" cy="188" r="6" fill="#4FC1A4"/>
-              </svg>`
-          },
-          {
-            key: '생명기술',
-            text: '생명기술',
-            info: '생명과학을 바탕으로 한 기술과 활용을 배우는 주제예요.',
-            artTitle: '생명기술 그림',
-            art: `
-              <svg viewBox="0 0 240 240" aria-label="생명기술 그림" xmlns="http://www.w3.org/2000/svg">
-                <rect width="240" height="240" rx="32" fill="#EEFBEF"/>
-                <ellipse cx="120" cy="198" rx="72" ry="10" fill="#DDEDDD"/>
-                <path d="M92 62C70 78 65 104 80 126C95 147 116 150 120 170C124 150 145 147 160 126C175 104 170 78 148 62" fill="none" stroke="#4AA86A" stroke-width="8" stroke-linecap="round"/>
-                <path d="M92 62C99 78 111 92 120 104C129 92 141 78 148 62" fill="none" stroke="#4AA86A" stroke-width="8" stroke-linecap="round"/>
-                <path d="M120 52V188" stroke="#4AA86A" stroke-width="6" stroke-linecap="round"/>
-                <circle cx="79" cy="175" r="21" fill="#BFE8FF" stroke="#43739A" stroke-width="5"/>
-                <circle cx="163" cy="175" r="21" fill="#FFD7E4" stroke="#9A4963" stroke-width="5"/>
-                <path d="M79 163V187M67 175H91" stroke="#43739A" stroke-width="5" stroke-linecap="round"/>
-                <path d="M151 175H175" stroke="#9A4963" stroke-width="5" stroke-linecap="round"/>
-              </svg>`
-          }
+          { text: '기술', info: '기술의 의미와 우리 생활 속 기술 활용을 배우는 주제예요.', artTitle: '기술 그림', art: `<svg viewBox="0 0 240 240" aria-label="기술 그림" xmlns="http://www.w3.org/2000/svg"><rect width="240" height="240" rx="32" fill="#EEF6FF"/><ellipse cx="120" cy="199" rx="72" ry="10" fill="#D9E8F7"/><g class="art-spin"><circle cx="120" cy="120" r="34" fill="#8CC2FF" stroke="#245D94" stroke-width="5"/><g fill="#8CC2FF" stroke="#245D94" stroke-width="5"><rect x="113" y="45" width="14" height="30" rx="4"/><rect x="113" y="165" width="14" height="30" rx="4"/><rect x="165" y="113" width="30" height="14" rx="4"/><rect x="45" y="113" width="30" height="14" rx="4"/><rect x="151" y="66" width="14" height="28" rx="4" transform="rotate(45 158 80)"/><rect x="75" y="146" width="14" height="28" rx="4" transform="rotate(45 82 160)"/><rect x="146" y="151" width="28" height="14" rx="4" transform="rotate(45 160 158)"/><rect x="66" y="75" width="28" height="14" rx="4" transform="rotate(45 80 82)"/></g><circle cx="120" cy="120" r="12" fill="#ffffff" stroke="#245D94" stroke-width="5"/></g></svg>`},
+          { text: '발명', info: '새로운 아이디어를 생각하고 문제를 해결하는 발명을 배우는 주제예요.', artTitle: '발명 그림', art: `<svg viewBox="0 0 240 240" aria-label="발명 그림" xmlns="http://www.w3.org/2000/svg"><rect width="240" height="240" rx="32" fill="#FFF7DF"/><ellipse cx="120" cy="198" rx="72" ry="10" fill="#EADFB3"/><g class="art-bounce"><path d="M120 55C90 55 67 78 67 109C67 130 78 144 91 156C97 162 101 169 102 176H138C139 169 143 162 149 156C162 144 173 130 173 109C173 78 150 55 120 55Z" fill="#FFD764" stroke="#A86A00" stroke-width="5"/></g><rect x="101" y="176" width="38" height="18" rx="6" fill="#B6C7D8" stroke="#5A6B7C" stroke-width="5"/><rect x="104" y="194" width="32" height="12" rx="5" fill="#8A99A8"/><g class="art-blink"><path d="M92 43L84 27 M148 43L156 27 M176 74L193 67 M47 68L64 74" stroke="#F2B400" stroke-width="6" stroke-linecap="round"/></g></svg>`},
+          { text: '재료제작', info: '다양한 재료의 특성과 만들기 과정을 배우는 주제예요.', artTitle: '재료제작 그림', art: `<svg viewBox="0 0 240 240" aria-label="재료제작 그림" xmlns="http://www.w3.org/2000/svg"><rect width="240" height="240" rx="32" fill="#F3F7FA"/><ellipse cx="120" cy="197" rx="72" ry="10" fill="#DEE6EC"/><g class="art-bounce"><rect x="57" y="154" width="126" height="18" rx="7" fill="#B98A5C"/><rect x="76" y="121" width="57" height="33" rx="6" fill="#91B9D9" stroke="#335F82" stroke-width="5"/></g><g class="art-sway"><path d="M157 65L176 84L122 138L104 138L104 119L157 65Z" fill="#FFD18E" stroke="#935D24" stroke-width="5"/><path d="M176 84L185 75L194 84L185 93Z" fill="#FF8F8F" stroke="#935D24" stroke-width="5"/></g><rect x="140" y="139" width="28" height="15" rx="4" fill="#6E4D33"/></svg>`},
+          { text: '친환경에너지', info: '태양광, 바람 등 환경을 생각하는 에너지를 배우는 주제예요.', artTitle: '친환경에너지 그림', art: `<svg viewBox="0 0 240 240" aria-label="친환경에너지 그림" xmlns="http://www.w3.org/2000/svg"><rect width="240" height="240" rx="32" fill="#EDF8EC"/><path d="M40 186H200" stroke="#7AB36B" stroke-width="8" stroke-linecap="round"/><circle cx="66" cy="63" r="23" fill="#FFD45A" class="art-bounce"/><g class="art-bounce"><rect x="46" y="146" width="82" height="42" rx="8" fill="#5B95D6" stroke="#295985" stroke-width="5"/><path d="M86 146V126" stroke="#7A8EA3" stroke-width="6"/><path d="M56 161H116M56 174H116M66 146V188M86 146V188M106 146V188" stroke="#CFE7FF" stroke-width="3"/></g><g class="art-spin"><path d="M166 188V104" stroke="#7A8EA3" stroke-width="6" stroke-linecap="round"/><circle cx="166" cy="88" r="8" fill="#7A8EA3"/><path d="M166 54L180 88L166 82L152 88Z" fill="#BFE8FF" stroke="#2F6C93" stroke-width="4" stroke-linejoin="round"/><path d="M131 95L166 82L160 96L166 110Z" fill="#BFE8FF" stroke="#2F6C93" stroke-width="4" stroke-linejoin="round"/><path d="M201 95L166 82L172 96L166 110Z" fill="#BFE8FF" stroke="#2F6C93" stroke-width="4" stroke-linejoin="round"/></g></svg>`},
+          { text: '수송기술', info: '사람과 물건을 이동시키는 다양한 수송기술을 배우는 주제예요.', artTitle: '수송기술 그림', art: `<svg viewBox="0 0 240 240" aria-label="수송기술 그림" xmlns="http://www.w3.org/2000/svg"><rect width="240" height="240" rx="32" fill="#EEF6FF"/><path d="M42 177H198" stroke="#A9BACB" stroke-width="7" stroke-linecap="round"/><g class="art-bounce"><path d="M49 145L67 109C71 100 80 94 90 94H145C154 94 162 99 168 107L189 133V160H49V145Z" fill="#FF8E7B" stroke="#954133" stroke-width="5"/><rect x="82" y="107" width="34" height="23" rx="5" fill="#DDF1FF"/><rect x="121" y="107" width="31" height="23" rx="5" fill="#DDF1FF"/></g><g class="art-spin"><circle cx="82" cy="161" r="17" fill="#313B45"/><circle cx="157" cy="161" r="17" fill="#313B45"/><circle cx="82" cy="161" r="7" fill="#C7D2DB"/><circle cx="157" cy="161" r="7" fill="#C7D2DB"/></g><circle cx="181" cy="144" r="4" fill="#FFE28A" class="art-blink"/></svg>`},
+          { text: '건설기술', info: '건축물과 구조물, 안전한 건설 과정을 배우는 주제예요.', artTitle: '건설기술 그림', art: `<svg viewBox="0 0 240 240" aria-label="건설기술 그림" xmlns="http://www.w3.org/2000/svg"><rect width="240" height="240" rx="32" fill="#FFF6E8"/><path d="M40 190H200" stroke="#8E5F43" stroke-width="6" stroke-linecap="round"/><g class="art-bounce"><rect x="53" y="111" width="52" height="79" rx="4" fill="#9AD0FF" stroke="#3B6D94" stroke-width="5"/><rect x="106" y="84" width="45" height="106" rx="4" fill="#7AB9F0" stroke="#3B6D94" stroke-width="5"/><rect x="152" y="58" width="36" height="132" rx="4" fill="#5EA2E8" stroke="#3B6D94" stroke-width="5"/></g><g class="art-sway"><path d="M39 61H109" stroke="#E0A82F" stroke-width="8" stroke-linecap="round"/><path d="M74 61V93" stroke="#E0A82F" stroke-width="8" stroke-linecap="round"/><path d="M74 93L114 109" stroke="#E0A82F" stroke-width="8" stroke-linecap="round"/><rect x="108" y="103" width="12" height="12" fill="#E0A82F"/></g></svg>`},
+          { text: '정보통신기술', info: '컴퓨터와 인터넷, 디지털 소통 기술을 배우는 주제예요.', artTitle: '정보통신기술 그림', art: `<svg viewBox="0 0 240 240" aria-label="정보통신기술 그림" xmlns="http://www.w3.org/2000/svg"><rect width="240" height="240" rx="32" fill="#EFF4FF"/><ellipse cx="120" cy="197" rx="72" ry="10" fill="#DEE5F4"/><g class="art-bounce"><rect x="49" y="62" width="142" height="92" rx="10" fill="#A6CAFF" stroke="#35689A" stroke-width="5"/><rect x="69" y="82" width="102" height="52" rx="6" fill="#EAF4FF"/></g><rect x="98" y="154" width="44" height="12" rx="4" fill="#6C7D8F"/><rect x="84" y="166" width="72" height="10" rx="4" fill="#9DB0C2"/><g class="art-blink"><path d="M87 121C96 106 116 100 132 108C143 114 151 113 159 105" fill="none" stroke="#5A8BE0" stroke-width="5" stroke-linecap="round"/><path d="M78 186C90 169 107 160 120 160C133 160 150 169 162 186" fill="none" stroke="#4FC1A4" stroke-width="6" stroke-linecap="round"/><circle cx="120" cy="188" r="6" fill="#4FC1A4"/></g></svg>`},
+          { text: '생명기술', info: '생명과학을 바탕으로 한 기술과 활용을 배우는 주제예요.', artTitle: '생명기술 그림', art: `<svg viewBox="0 0 240 240" aria-label="생명기술 그림" xmlns="http://www.w3.org/2000/svg"><rect width="240" height="240" rx="32" fill="#EEFBEF"/><ellipse cx="120" cy="198" rx="72" ry="10" fill="#DDEDDD"/><g class="art-sway"><path d="M92 62C70 78 65 104 80 126C95 147 116 150 120 170C124 150 145 147 160 126C175 104 170 78 148 62" fill="none" stroke="#4AA86A" stroke-width="8" stroke-linecap="round"/><path d="M92 62C99 78 111 92 120 104C129 92 141 78 148 62" fill="none" stroke="#4AA86A" stroke-width="8" stroke-linecap="round"/><path d="M120 52V188" stroke="#4AA86A" stroke-width="6" stroke-linecap="round"/></g><g class="art-bounce"><circle cx="79" cy="175" r="21" fill="#BFE8FF" stroke="#43739A" stroke-width="5"/><circle cx="163" cy="175" r="21" fill="#FFD7E4" stroke="#9A4963" stroke-width="5"/></g><g class="art-blink"><path d="M79 163V187M67 175H91" stroke="#43739A" stroke-width="5" stroke-linecap="round"/><path d="M151 175H175" stroke="#9A4963" stroke-width="5" stroke-linecap="round"/></g></svg>`}
         ]
       }
     };
 
-    const topicIcons = {
-      '의': '👕', '식': '🍽️', '주': '🏠', '가족': '👨‍👩‍👧',
-      '소비': '🛍️', '발달': '🌱', '기술': '⚙️', '발명': '💡',
-      '재료제작': '🛠️', '친환경에너지': '🌞', '수송기술': '🚗',
-      '건설기술': '🏗️', '정보통신기술': '💻', '생명기술': '🧬'
-    };
-
-    const categoryTitle = document.getElementById('categoryTitle');
-    const categoryDesc = document.getElementById('categoryDesc');
-    const categoryGrid = document.getElementById('categoryGrid');
+    const startButton = document.getElementById('startButton');
+    const backToHomeBtn = document.getElementById('backToHomeBtn');
+    const techMainBtn = document.getElementById('techMainBtn');
+    const homeMainBtn = document.getElementById('homeMainBtn');
+    const centerDuo = document.getElementById('centerDuo');
+    const orbitTopics = document.getElementById('orbitTopics');
     const artBox = document.getElementById('artBox');
+    const resetOrbitBtn = document.getElementById('resetOrbitBtn');
+    const ringEls = [document.getElementById('ring1'), document.getElementById('ring2'), document.getElementById('ring3')];
 
-    function renderArt(item) {
+    let currentMode = null;
+    let activeTopic = null;
+
+    function showArt(item) {
       artBox.innerHTML = `
-        <h3>${item.text}</h3>
-        <p>${item.info}</p>
-        <div class="art">${item.art}</div>
-        <div class="caption-chip">${item.artTitle}</div>
+        <div class="art-enter" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+          <h3>${item.text}</h3>
+          <p>${item.info}</p>
+          <div class="art">${item.art}</div>
+          <div class="caption-chip">${item.artTitle}</div>
+        </div>
       `;
     }
 
-    function renderCategoryScreen(mode) {
-      const data = topics[mode];
-      const area = document.getElementById('topicArea');
-      area.hidden = false;
-      document.getElementById('orbitScene').classList.add('expanded');
-      document.getElementById('topicDetails').hidden = false;
-      document.getElementById('techButton').classList.toggle('chosen', mode === 'tech');
-      document.getElementById('homeEcButton').classList.toggle('chosen', mode === 'home');
-      document.getElementById('techButton').setAttribute('aria-expanded', String(mode === 'tech'));
-      document.getElementById('homeEcButton').setAttribute('aria-expanded', String(mode === 'home'));
-      categoryTitle.textContent = data.title;
-      categoryDesc.textContent = data.desc;
-      categoryGrid.replaceChildren();
-      artBox.innerHTML = '<div class="placeholder">주변의 동그란 주제 버튼을 눌러 그림을 살펴보세요.</div>';
-
-      data.items.forEach((item, index) => {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'grid-btn';
-        button.style.setProperty('--order', index);
-        const count = data.items.length;
-        const angle = (-90 + index * 360 / count) * Math.PI / 180;
-        // 화면 폭에 따라 원의 반지름 조정. 좌우 넘침 방지.
-        const radius = window.matchMedia('(max-width: 600px)').matches
-          ? Math.min(135, Math.max(85, (window.innerWidth - 110) / 2))
-          : 193;
-        button.style.setProperty('--x', Math.round(Math.cos(angle) * radius) + 'px');
-        button.style.setProperty('--y', Math.round(Math.sin(angle) * radius) + 'px');
-        const icon = document.createElement('span');
-        icon.className = 'topic-icon';
-        icon.setAttribute('aria-hidden', 'true');
-        icon.textContent = topicIcons[item.key] || '✨';
-        const label = document.createElement('span');
-        label.textContent = item.text;
-        button.append(icon, label);
-        button.addEventListener('click', () => {
-          categoryGrid.querySelectorAll('.grid-btn').forEach(btn => btn.classList.remove('active'));
-          button.classList.add('active');
-          renderArt(item);
-        });
-        categoryGrid.appendChild(button);
-      });
+    function clearOrbit() {
+      orbitTopics.innerHTML = '';
+      ringEls.forEach(r => r.classList.remove('visible'));
+      resetOrbitBtn.classList.remove('show');
+      techMainBtn.classList.remove('selected','dim');
+      homeMainBtn.classList.remove('selected','dim');
+      centerDuo.style.transform = 'scale(1)';
+      currentMode = null;
+      activeTopic = null;
+      artBox.innerHTML = '<div class="placeholder">가운데에서 과목을 먼저 선택해보세요.<br>주제를 누르면 더 역동적으로 움직이는 그림이 나타납니다.</div>';
     }
 
-    document.getElementById('changeSubject').addEventListener('click', () => {
-      document.getElementById('orbitScene').classList.remove('expanded');
-      document.getElementById('topicArea').hidden = true;
-      document.getElementById('topicDetails').hidden = true;
-      document.querySelectorAll('.subject-card').forEach(btn => {
-        btn.classList.remove('chosen');
-        btn.setAttribute('aria-expanded', 'false');
+    function activateMode(mode) {
+      currentMode = mode;
+      activeTopic = null;
+      const selectedBtn = mode === 'tech' ? techMainBtn : homeMainBtn;
+      const otherBtn = mode === 'tech' ? homeMainBtn : techMainBtn;
+
+      selectedBtn.classList.add('selected');
+      otherBtn.classList.add('dim');
+      resetOrbitBtn.classList.add('show');
+      centerDuo.style.transform = 'scale(1.02)';
+
+      orbitTopics.innerHTML = '';
+      const items = topics[mode].items;
+      const mobile = window.innerWidth <= 680;
+      const baseRadius = mobile ? 122 : 170;
+      const extraRadius = mobile ? 42 : 55;
+      const total = items.length;
+
+      ringEls.forEach((r, idx) => {
+        r.classList.toggle('visible', idx < Math.ceil(total/3));
       });
+
+      items.forEach((item, index) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'orbit-topic';
+        const angle = (-90 + index * (360 / total)) * Math.PI / 180;
+        const radius = total <= 6 ? baseRadius : (index % 2 === 0 ? baseRadius : baseRadius + extraRadius);
+        const x = Math.cos(angle) * radius;
+        const y = Math.sin(angle) * radius;
+        wrap.dataset.x = x.toFixed(1);
+        wrap.dataset.y = y.toFixed(1);
+        wrap.innerHTML = `<button type="button" class="topic-btn"><span>${item.text}</span><span class="mini">주제</span></button>`;
+        const btn = wrap.querySelector('button');
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeTopic = item.text;
+          showArt(item);
+        });
+        orbitTopics.appendChild(wrap);
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            wrap.classList.add('visible');
+            wrap.style.transform = `translate(${x}px, ${y}px) scale(1)`;
+          }, 60 * index);
+        });
+      });
+
+      if (items[0]) {
+        setTimeout(() => {
+          const firstBtn = orbitTopics.querySelector('.topic-btn');
+          if (firstBtn) firstBtn.click();
+        }, 420);
+      }
+    }
+
+    startButton.addEventListener('click', () => {
+      showScreen('select');
+      clearOrbit();
     });
-    document.getElementById('startButton').addEventListener('click', () => showScreen('subject'));
-    document.getElementById('backToHome').addEventListener('click', () => showScreen('home'));
-    document.getElementById('techButton').addEventListener('click', () => renderCategoryScreen('tech'));
-    document.getElementById('homeEcButton').addEventListener('click', () => renderCategoryScreen('home'));
+    backToHomeBtn.addEventListener('click', () => showScreen('home'));
+    resetOrbitBtn.addEventListener('click', clearOrbit);
+    techMainBtn.addEventListener('click', () => activateMode('tech'));
+    homeMainBtn.addEventListener('click', () => activateMode('home'));
+    window.addEventListener('resize', () => { if (currentMode) activateMode(currentMode); });
   </script>
 </body>
 </html>
